@@ -23,21 +23,25 @@ def send_report(user):
     from_date = first_day_last_month.strftime('%Y-%m-%d')
     to_date = last_day_last_month.strftime('%Y-%m-%d')
 
-    link = EMAIL_DOMAIN + '/pages/%s?from=%s&to=%s' % (
+    link = EMAIL_DOMAIN + '/pages/%s?from=%s&to=%s&author=%s' % (
       page.key.id(),
       from_date,
       to_date,
+      user.first_name,
     )
 
     results = search_posts(
       page,
-      'created_time >= %s AND created_time <= %s' % (from_date, to_date)
+      'created_time >= %s AND created_time <= %s AND author: %s' % (from_date, to_date, user.first_name)
     )
 
-    body += '%s\n' % page.name
-    body += 'Posts: %s\n' % results['nr_of_posts']
-    body += 'Comments: %s\n' % results['nr_of_comments']
-    body += '%s\n\n' % link
+    body += '%s\nYou (%s) have been involved in %s post(s) and %s comment(s).\n%s\n\n' % (
+      page.name,
+      user.first_name,
+      results['nr_of_posts'],
+      results['nr_of_comments'],
+      link
+    )
 
   print body
 
