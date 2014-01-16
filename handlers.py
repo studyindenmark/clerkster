@@ -8,6 +8,8 @@ from jinja2.runtime import TemplateNotFound
 
 from simpleauth import SimpleAuthHandler
 
+from facebook import GraphAPI
+
 
 class BaseRequestHandler(webapp2.RequestHandler):
   def dispatch(self):
@@ -99,6 +101,28 @@ class AddAccountPageHandler(BaseRequestHandler):
       self.redirect('/')
 
 
+class FacebookPostsHandler(BaseRequestHandler):
+  def get(self):
+    """Handles GET /facebook"""    
+    if not self.logged_in:
+      self.redirect('/')
+      return
+
+    posts = []
+
+    u = self.current_user
+
+    graph = GraphAPI(access_token=u.facebook_access_token)
+    pages = graph.get_connections("me", "accounts")
+
+    self.render('facebook.html', {
+      'user': u,
+      'pages': pages,
+      'posts': posts,
+      'session': self.auth.get_user_by_session()
+    })
+
+
 class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
   """Authentication handler for OAuth 2.0, 1.0(a) and OpenID."""
 
@@ -129,6 +153,7 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     
     user = self.auth.store.user_model.get_by_auth_id(auth_id)
     _attrs = self._to_user_model_attrs(data, self.USER_ATTRS[provider])
+    _attrs[provider + '_access_token'] = auth_info['access_token']
 
     if user:
       logging.info('Found existing user to log in')
@@ -140,8 +165,7 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
       # from the datastore and update local user in case something's changed.
       user.populate(**_attrs)
       user.put()
-      self.auth.set_session(
-        self.auth.store.user_to_dict(user))
+      self.auth.set_session(self.auth.store.user_to_dict(user))
       
     else:
       # check whether there's a user currently logged in
@@ -164,11 +188,6 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
         ok, user = self.auth.store.user_model.create_user(auth_id, **_attrs)
         if ok:
           self.auth.set_session(self.auth.store.user_to_dict(user))
-
-    # Remember auth data during redirect, just for this demo. You wouldn't
-    # normally do this.
-    self.session.add_flash(data, 'data - from _on_signin(...)')
-    self.session.add_flash(auth_info, 'auth_info - from _on_signin(...)')
 
     # Go to the profile page
     self.redirect('/profile')

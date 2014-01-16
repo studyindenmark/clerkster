@@ -13,10 +13,10 @@ if 'lib' not in sys.path:
 app_config = {
   'webapp2_extras.sessions': {
     'cookie_name': '_simpleauth_sess',
-    'secret_key': SESSION_KEY
+    'secret_key': SESSION_KEY,
   },
   'webapp2_extras.auth': {
-    'user_attributes': []
+    'user_attributes': [],
   }
 }
     
@@ -24,6 +24,7 @@ app_config = {
 routes = [
   Route('/', handler='handlers.RootHandler'),  
   Route('/add', handler='handlers.AddAccountPageHandler'),
+  Route('/facebook', handler='handlers.FacebookPostsHandler'),
   Route('/profile', handler='handlers.ProfileHandler', name='profile'),
   Route('/logout', handler='handlers.AuthHandler:logout', name='logout'),
   Route('/auth/<provider>', handler='handlers.AuthHandler:_simple_auth', name='auth_login'),
