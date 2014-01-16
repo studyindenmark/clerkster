@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block main %}
+  <h2>Posts for page {{ page.username }} </h2>
+  <ul>
+  {% for post in posts.data %}
+	  <li>
+		  <p>From: {{ post.from.name }}</p>
+		  <p>{{ post.story }}</p>
+		  <p>In reply to: {{ post.message }}</p>
+	  </li>
+  {% endfor %}
+  </ul>
+
+  <h2>Threads for page {{ page.username }} </h2>
+  <ul>
+  {% for thread in threads.data %}
+	  {% for message in thread.messages.data %}
+		  <li>
+			  <p>{{ message }}</p>
+		  </li>
+	  {% endfor %}
+  {% endfor %}
+  </ul>
+{% endblock %}

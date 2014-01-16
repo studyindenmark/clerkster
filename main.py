@@ -24,7 +24,9 @@ app_config = {
 routes = [
   Route('/', handler='handlers.RootHandler'),  
   Route('/add', handler='handlers.AddAccountPageHandler'),
-  Route('/facebook', handler='handlers.FacebookPostsHandler'),
+  Route('/facebook/pages', handler='handlers.FacebookHandler:get_listing'),
+  Route('/facebook/pages/<page_id>', handler='handlers.FacebookHandler:get_page', methods=['GET']),
+  Route('/facebook/pages/<page_id>', handler='handlers.FacebookHandler:post_page', methods=['POST']),
   Route('/profile', handler='handlers.ProfileHandler', name='profile'),
   Route('/logout', handler='handlers.AuthHandler:logout', name='logout'),
   Route('/auth/<provider>', handler='handlers.AuthHandler:_simple_auth', name='auth_login'),

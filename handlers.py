@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import secrets
+import json
 
 import webapp2
 from webapp2_extras import auth, sessions, jinja2
@@ -9,6 +10,8 @@ from jinja2.runtime import TemplateNotFound
 from simpleauth import SimpleAuthHandler
 
 from facebook import GraphAPI
+
+import models
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -101,24 +104,60 @@ class AddAccountPageHandler(BaseRequestHandler):
       self.redirect('/')
 
 
-class FacebookPostsHandler(BaseRequestHandler):
-  def get(self):
-    """Handles GET /facebook"""    
+class FacebookHandler(BaseRequestHandler):
+
+  def __init__(self, request, response):
+    self.initialize(request, response)
+    self.graph = GraphAPI(
+      access_token=self.current_user.facebook_access_token
+    )
+
+  def get_listing(self):
+    """Handles GET /facebook/pages"""    
     if not self.logged_in:
       self.redirect('/')
       return
 
-    posts = []
+    pages = self.graph.get_connections("me", "accounts")
 
-    u = self.current_user
-
-    graph = GraphAPI(access_token=u.facebook_access_token)
-    pages = graph.get_connections("me", "accounts")
-
-    self.render('facebook.html', {
-      'user': u,
+    self.render('facebook_pages.html', {
+      'user': self.current_user,
       'pages': pages,
+      'session': self.auth.get_user_by_session()
+    })
+
+  def post_page(self, page_id):
+    pages = self.graph.get_connections("me", "accounts")
+    m = None
+    for page in pages['data']:
+      if page['id'] == page_id:
+        m = models.FacebookPage(
+          id=page_id,
+          access_token=page['access_token'],
+          name=page['name'],
+        )
+        m.put()
+        break
+    assert m is not None
+    self.redirect('/facebook/pages/%s' % page_id)
+
+  def get_page(self, page_id):
+    m = models.FacebookPage.get_by_id(page_id)
+    self.graph.access_token = m.access_token
+
+    page = self.graph.get_object(page_id)
+    posts = self.graph.get_connections(page_id, "posts")
+    threads = self.graph.get_connections(page_id, "threads")
+
+    # self.response.headers['Content-Type'] = 'application/json'
+    # self.response.write(json.dumps(threads))
+    # return
+
+    self.render('facebook_page.html', {
+      'user': self.current_user,
+      'page': page,
       'posts': posts,
+      'threads': threads,
       'session': self.auth.get_user_by_session()
     })
 

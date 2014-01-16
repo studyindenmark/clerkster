@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block main %}
+  <h2>Facebook pages</h2>
+  <ul>
+  {% for page in pages.data %}
+	  <li>
+		  <a href="/facebook/pages/{{page.id}}">{{ page.name }}</a>
+		  <form action="/facebook/pages/{{page.id}}" method="post">
+			  <input type="submit" value="Add page to database"></form>
+		  </form>
+	  </li>
+  {% endfor %}
+  </ul>
+{% endblock %}
