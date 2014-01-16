@@ -78,7 +78,7 @@ handlers:
 - url: /(img|css)/(.*)
   static_files: static/\1/\2
   upload: static/(img|css)/(.*)
-    
+
 # dynamic handlers
 - url: /.*
   script: main.app

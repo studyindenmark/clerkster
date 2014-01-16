@@ -74,11 +74,24 @@ class RootHandler(BaseRequestHandler):
     """Handles default landing page"""
     self.render('home.html')
     
+
 class ProfileHandler(BaseRequestHandler):
   def get(self):
     """Handles GET /profile"""    
     if self.logged_in:
       self.render('profile.html', {
+        'user': self.current_user, 
+        'session': self.auth.get_user_by_session()
+      })
+    else:
+      self.redirect('/')
+
+
+class AddAccountPageHandler(BaseRequestHandler):
+  def get(self):
+    """Handles GET /add"""    
+    if self.logged_in:
+      self.render('add.html', {
         'user': self.current_user, 
         'session': self.auth.get_user_by_session()
       })
@@ -97,6 +110,12 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
       'profile_image_url': 'avatar_url',
       'screen_name'      : 'name',
       'link'             : 'link'
+    },
+    'facebook' : {
+      'id'     : lambda id: ('avatar_url', 
+        'http://graph.facebook.com/{0}/picture?type=large'.format(id)),
+      'name'   : 'name',
+      'link'   : 'link'
     },
   }
   
