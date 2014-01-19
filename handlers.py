@@ -10,6 +10,7 @@ from jinja2.runtime import TemplateNotFound
 from simpleauth import SimpleAuthHandler
 
 from facebook import GraphAPI
+from twitter import TwitterAPI
 
 import models
 
@@ -162,6 +163,35 @@ class FacebookHandler(BaseRequestHandler):
     })
 
 
+class TwitterHandler(BaseRequestHandler):
+
+  def __init__(self, request, response):
+    self.initialize(request, response)
+
+    assert self.current_user.twitter_oauth_token
+    assert self.current_user.twitter_oauth_token_secret
+
+    self.api = TwitterAPI(
+      secrets.TWITTER_CONSUMER_KEY,
+      secrets.TWITTER_CONSUMER_SECRET,
+      self.current_user.twitter_oauth_token,
+      self.current_user.twitter_oauth_token_secret,
+    )
+
+  def get_tweets(self):
+    tweets = self.api.get_tweets(screen_name='youtify')
+
+    # self.response.headers['Content-Type'] = 'application/json'
+    # self.response.write(json.dumps(tweets))
+    # return
+
+    self.render('twitter.html', {
+      'user': self.current_user,
+      'tweets': tweets,
+      'session': self.auth.get_user_by_session()
+    })
+
+
 class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
   """Authentication handler for OAuth 2.0, 1.0(a) and OpenID."""
 
@@ -192,7 +222,12 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     
     user = self.auth.store.user_model.get_by_auth_id(auth_id)
     _attrs = self._to_user_model_attrs(data, self.USER_ATTRS[provider])
-    _attrs[provider + '_access_token'] = auth_info['access_token']
+
+    if provider == 'facebook':
+      _attrs['facebook_access_token'] = auth_info['access_token']
+    elif provider == 'twitter':
+      _attrs['twitter_oauth_token'] = auth_info['oauth_token']
+      _attrs['twitter_oauth_token_secret'] = auth_info['oauth_token_secret']
 
     if user:
       logging.info('Found existing user to log in')

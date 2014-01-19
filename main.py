@@ -24,6 +24,7 @@ app_config = {
 routes = [
   Route('/', handler='handlers.RootHandler'),  
   Route('/add', handler='handlers.AddAccountPageHandler'),
+  Route('/twitter/tweets', handler='handlers.TwitterHandler:get_tweets'),
   Route('/facebook/pages', handler='handlers.FacebookHandler:get_listing'),
   Route('/facebook/pages/<page_id>', handler='handlers.FacebookHandler:get_page', methods=['GET']),
   Route('/facebook/pages/<page_id>', handler='handlers.FacebookHandler:post_page', methods=['POST']),
