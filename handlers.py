@@ -9,7 +9,7 @@ from jinja2.runtime import TemplateNotFound
 
 from simpleauth import SimpleAuthHandler
 
-from facebook import GraphAPI
+from facebook import FacebookAPI
 from twitter import TwitterAPI
 
 import models
@@ -109,17 +109,11 @@ class FacebookHandler(BaseRequestHandler):
 
   def __init__(self, request, response):
     self.initialize(request, response)
-    self.graph = GraphAPI(
-      access_token=self.current_user.facebook_access_token
-    )
+    self.api = FacebookAPI(self.current_user.facebook_access_token)
 
-  def get_listing(self):
+  def get_pages(self):
     """Handles GET /facebook/pages"""    
-    if not self.logged_in:
-      self.redirect('/')
-      return
-
-    pages = self.graph.get_connections("me", "accounts")
+    pages = self.api.fetch("me/accounts")
 
     self.render('facebook_pages.html', {
       'user': self.current_user,
@@ -127,8 +121,12 @@ class FacebookHandler(BaseRequestHandler):
       'session': self.auth.get_user_by_session()
     })
 
+  def _set_access_token_from_page(self, page_id):
+    m = models.FacebookPage.get_by_id(page_id)
+    self.api.access_token = m.access_token
+
   def post_page(self, page_id):
-    pages = self.graph.get_connections("me", "accounts")
+    pages = self.api.fetch("me/accounts")
     m = None
     for page in pages['data']:
       if page['id'] == page_id:
@@ -143,30 +141,26 @@ class FacebookHandler(BaseRequestHandler):
     self.redirect('/facebook/pages/%s' % page_id)
 
   def get_page(self, page_id):
-    m = models.FacebookPage.get_by_id(page_id)
-    self.graph.access_token = m.access_token
-    data = self.graph.get_object(page_id)
+    self._set_access_token_from_page(page_id)
+    data = self.api.fetch(page_id)
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def get_posts(self, page_id):
-    m = models.FacebookPage.get_by_id(page_id)
-    self.graph.access_token = m.access_token
-    data = self.graph.get_connections(page_id, "posts")
+    self._set_access_token_from_page(page_id)
+    data = self.api.fetch(page_id + "/posts")
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def get_post(self, page_id, post_id):
-    m = models.FacebookPage.get_by_id(page_id)
-    self.graph.access_token = m.access_token
-    data = self.graph.get_object(post_id)
+    self._set_access_token_from_page(page_id)
+    data = self.api.fetch(post_id)
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def get_threads(self, page_id):
-    m = models.FacebookPage.get_by_id(page_id)
-    self.graph.access_token = m.access_token
-    data = self.graph.get_connections(page_id, "threads")
+    self._set_access_token_from_page(page_id)
+    data = self.api.fetch(page_id + "/threads")
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
