@@ -145,22 +145,30 @@ class FacebookHandler(BaseRequestHandler):
   def get_page(self, page_id):
     m = models.FacebookPage.get_by_id(page_id)
     self.graph.access_token = m.access_token
+    data = self.graph.get_object(page_id)
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
 
-    page = self.graph.get_object(page_id)
-    posts = self.graph.get_connections(page_id, "posts")
-    threads = self.graph.get_connections(page_id, "threads")
+  def get_posts(self, page_id):
+    m = models.FacebookPage.get_by_id(page_id)
+    self.graph.access_token = m.access_token
+    data = self.graph.get_connections(page_id, "posts")
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
 
-    # self.response.headers['Content-Type'] = 'application/json'
-    # self.response.write(json.dumps(threads))
-    # return
+  def get_post(self, page_id, post_id):
+    m = models.FacebookPage.get_by_id(page_id)
+    self.graph.access_token = m.access_token
+    data = self.graph.get_object(post_id)
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
 
-    self.render('facebook_page.html', {
-      'user': self.current_user,
-      'page': page,
-      'posts': posts,
-      'threads': threads,
-      'session': self.auth.get_user_by_session()
-    })
+  def get_threads(self, page_id):
+    m = models.FacebookPage.get_by_id(page_id)
+    self.graph.access_token = m.access_token
+    data = self.graph.get_connections(page_id, "threads")
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
 
 
 class TwitterHandler(BaseRequestHandler):
