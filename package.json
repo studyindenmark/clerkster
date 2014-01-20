@@ -1,0 +1,25 @@
+{
+  "name": "studyindenmark-clerkster",
+  "version": "0.0.0",
+  "description": "== studyindenmark-clerkster ==",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pthulin/clerskter.git"
+  },
+  "author": "Per Thulin",
+  "license": "MIT-License",
+  "bugs": {
+    "url": "https://github.com/pthulin/clerkster/issues"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-less": "~0.8.3",
+    "grunt-contrib-uglify": "~0.2.7"
+  }
+}

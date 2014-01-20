@@ -1,0 +1,70 @@
+.transition (@transition) {
+	-webkit-transition: @transition;
+	-moz-transition: @transition;
+	-ms-transition: @transition;
+	-o-transition: @transition; 
+	transition: @transition; 
+}
+
+.transform(@string) {
+	-webkit-transform: @string;
+	-moz-transform: @string;
+	-ms-transform: @string;
+	-o-transform: @string;
+	transform: @string;
+}
+
+body {
+	padding: 60px 0 10px 0;
+}
+
+.navbar .dropdown-toggle {
+	padding-left: 45px;
+ 	background-size: 25px 25px; // Facebook delivers a 50x50, so make it retina ready.
+ 	background-position: 15px center;
+ 	background-repeat: no-repeat;
+}
+
+// .navbar .avatar {
+// 	position: absolute;
+// 	top: 0;
+// 	left: 0;
+// 	width: 26px;
+// 	height: 26px;
+// 	background-size: cover;
+// }
+
+.top-row {
+	margin-bottom: 20px;
+}
+
+a.back {
+	margin-bottom: 20px;
+	display: block;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.clickme {
+	cursor: pointer;
+}
+
+#loading-bar {
+	.bar {
+		background: #2c3e50;
+	}
+	.peg {
+		box-shadow: 0 0 10px #2c3e50, 0 0 5px #2c3e50;
+	}
+}
+
+#loading-bar-spinner {
+	.spinner-icon {
+		border-top-color:  #2c3e50;
+		border-left-color: #2c3e50;
+	}
+	.spinner-icon {
+	  width: 30px;
+	  height: 30px;
+	}
+}

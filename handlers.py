@@ -2,10 +2,10 @@
 import logging
 import secrets
 import json
+import os.path
 
 import webapp2
-from webapp2_extras import auth, sessions, jinja2
-from jinja2.runtime import TemplateNotFound
+from webapp2_extras import auth, sessions
 
 from simpleauth import SimpleAuthHandler
 
@@ -27,11 +27,6 @@ class BaseRequestHandler(webapp2.RequestHandler):
       # Save all sessions.
       self.session_store.save_sessions(self.response)
   
-  @webapp2.cached_property    
-  def jinja2(self):
-    """Returns a Jinja2 renderer cached in the app registry"""
-    return jinja2.get_jinja2(app=self.app)
-    
   @webapp2.cached_property
   def session(self):
     """Returns a session using the default cookie key"""
@@ -51,24 +46,12 @@ class BaseRequestHandler(webapp2.RequestHandler):
   def logged_in(self):
     """Returns true if a user is currently logged in, false otherwise"""
     return self.auth.get_user_by_session() is not None
-  
       
-  def render(self, template_name, template_vars={}):
-    # Preset values for the template
-    values = {
-      'url_for': self.uri_for,
-      'logged_in': self.logged_in,
-      'flashes': self.session.get_flashes()
-    }
-    
-    # Add manually supplied template values
-    values.update(template_vars)
-    
-    # read the template or 404.html
-    try:
-      self.response.write(self.jinja2.render_template(template_name, **values))
-    except TemplateNotFound:
-      self.abort(404)
+  def render(self, html_file):
+    root = os.path.dirname(__file__)
+    path = os.path.join(root, html_file)
+    content = open(path).read()
+    self.response.out.write(content)
 
   def head(self, *args):
     """Head is used by Twitter. If not there the tweet button shows 0"""
@@ -78,32 +61,11 @@ class BaseRequestHandler(webapp2.RequestHandler):
 class RootHandler(BaseRequestHandler):
   def get(self):
     """Handles default landing page"""
-    self.render('home.html')
+    if self.logged_in:
+      self.render('index.html')
+    else:
+      self.render('login.html')
     
-
-class ProfileHandler(BaseRequestHandler):
-  def get(self):
-    """Handles GET /profile"""    
-    if self.logged_in:
-      self.render('profile.html', {
-        'user': self.current_user, 
-        'session': self.auth.get_user_by_session()
-      })
-    else:
-      self.redirect('/')
-
-
-class AddAccountPageHandler(BaseRequestHandler):
-  def get(self):
-    """Handles GET /add"""    
-    if self.logged_in:
-      self.render('add.html', {
-        'user': self.current_user, 
-        'session': self.auth.get_user_by_session()
-      })
-    else:
-      self.redirect('/')
-
 
 class FacebookHandler(BaseRequestHandler):
 
@@ -113,13 +75,9 @@ class FacebookHandler(BaseRequestHandler):
 
   def get_pages(self):
     """Handles GET /facebook/pages"""    
-    pages = self.api.fetch("me/accounts")
-
-    self.render('facebook_pages.html', {
-      'user': self.current_user,
-      'pages': pages,
-      'session': self.auth.get_user_by_session()
-    })
+    data = self.api.fetch("me/accounts")
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
 
   def _set_access_token_from_page(self, page_id):
     m = models.FacebookPage.get_by_id(page_id)
@@ -159,6 +117,17 @@ class FacebookHandler(BaseRequestHandler):
     self.response.write(json.dumps(data))
 
 
+class UserHandler(BaseRequestHandler):
+
+  def get_info(self):
+    data = {
+      'avatar_url': self.current_user.avatar_url,
+      'name': self.current_user.name,
+    }
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
+
+
 class TwitterHandler(BaseRequestHandler):
 
   def __init__(self, request, response):
@@ -175,17 +144,9 @@ class TwitterHandler(BaseRequestHandler):
     )
 
   def get_tweets(self):
-    tweets = self.api.get_tweets(screen_name='youtify')
-
-    # self.response.headers['Content-Type'] = 'application/json'
-    # self.response.write(json.dumps(tweets))
-    # return
-
-    self.render('twitter.html', {
-      'user': self.current_user,
-      'tweets': tweets,
-      'session': self.auth.get_user_by_session()
-    })
+    data = self.api.get_tweets(screen_name='youtify')
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
 
 
 class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
@@ -202,7 +163,7 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     },
     'facebook' : {
       'id'     : lambda id: ('avatar_url', 
-        'http://graph.facebook.com/{0}/picture?type=large'.format(id)),
+        'http://graph.facebook.com/{0}/picture?type=square'.format(id)),
       'name'   : 'name',
       'link'   : 'link'
     },
@@ -259,17 +220,12 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
         if ok:
           self.auth.set_session(self.auth.store.user_to_dict(user))
 
-    # Go to the profile page
-    self.redirect('/profile')
+    self.redirect('/')
 
   def logout(self):
     self.auth.unset_session()
     self.redirect('/')
 
-  def handle_exception(self, exception, debug):
-    logging.error(exception)
-    self.render('error.html', {'exception': exception})
-    
   def _callback_uri_for(self, provider):
     return self.uri_for('auth_callback', provider=provider, _full=True)
     

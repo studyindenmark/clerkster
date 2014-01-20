@@ -65,24 +65,23 @@ builtins:
 #   /form
 handlers:
 
-# static content handlers  
-- url: /(favicon\.ico)
-  mime_type: image/png
-  static_files: static/\1
-  upload: static/favicon\.ico
+- url: /js
+  static_dir: js
 
-- url: /(robots\.txt)
-  static_files: static/\1
-  upload: static/robots\.txt
+- url: /css
+  static_dir: css
 
-- url: /(img|css)/(.*)
-  static_files: static/\1/\2
-  upload: static/(img|css)/(.*)
+- url: /img
+  static_dir: img
 
-# dynamic handlers
+- url: /fonts
+  static_dir: fonts
+
+- url: /html
+  static_dir: html
+
 - url: /.*
   script: main.app
-  secure: always
 
 # The skip_files element specifies which files in the application directory 
 # are not to be uploaded to App Engine. The value is either a regular 
@@ -94,6 +93,7 @@ skip_files:
 - ^(.*/)?.*~
 - ^(.*/)?.*sh
 - ^(.*/)?.*\.py[co]
+- ^(.*/)?.*\.less
 - ^(.*/)?.*/RCS/.*
 - ^(.*/)?\..*
 - ^(.*/)?.*\.bak$
