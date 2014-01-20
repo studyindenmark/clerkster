@@ -59,7 +59,7 @@ class BaseRequestHandler(webapp2.RequestHandler):
     
     
 class RootHandler(BaseRequestHandler):
-  def get(self):
+  def get(self, **kwargs):
     """Handles default landing page"""
     if self.logged_in:
       self.render('index.html')
@@ -75,28 +75,13 @@ class FacebookHandler(BaseRequestHandler):
 
   def get_pages(self):
     """Handles GET /facebook/pages"""    
-    data = self.api.fetch("me/accounts")
+    data = [m.json for m in models.FacebookPage.query(ancestor=self.current_user.key)]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def _set_access_token_from_page(self, page_id):
     m = models.FacebookPage.get_by_id(page_id)
     self.api.access_token = m.access_token
-
-  def post_page(self, page_id):
-    pages = self.api.fetch("me/accounts")
-    m = None
-    for page in pages['data']:
-      if page['id'] == page_id:
-        m = models.FacebookPage(
-          id=page_id,
-          access_token=page['access_token'],
-          name=page['name'],
-        )
-        m.put()
-        break
-    assert m is not None
-    self.redirect('/facebook/pages/%s' % page_id)
 
   def get_page(self, page_id):
     self._set_access_token_from_page(page_id)
@@ -168,7 +153,20 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
       'link'   : 'link'
     },
   }
-  
+
+  def fetch_facebook_pages_for_user(self, user):
+    self.api = FacebookAPI(self.current_user.facebook_access_token)
+    pages = self.api.fetch("me/accounts")
+    for page in pages['data']:
+      if models.FacebookPage.get_by_id(page['id']) == None:
+        m = models.FacebookPage(
+          parent=user.key,
+          id=page['id'],
+          access_token=page['access_token'],
+          name=page['name'],
+        )
+        m.put()
+
   def _on_signin(self, data, auth_info, provider):
     """Callback whenever a new or existing user is logging in.
      data is a user info dictionary.
@@ -219,6 +217,9 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
         ok, user = self.auth.store.user_model.create_user(auth_id, **_attrs)
         if ok:
           self.auth.set_session(self.auth.store.user_to_dict(user))
+
+    if provider == 'facebook':
+      self.fetch_facebook_pages_for_user(user)
 
     self.redirect('/')
 

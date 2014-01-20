@@ -7,14 +7,17 @@ function MainNav($location, api) {
         },
         templateUrl: '/html/directives/mainNav.html',
         link: function (scope, element) {
-            scope.isCurrentPath = function (path) {
-                var split1 = path.split('/');
-                var split2 = $location.path().split('/');
-                return split1[1] === split2[1];
+            scope.isCurrentPage = function (id) {
+                var split = $location.path().split('/pages/');
+                return id === split[1];
             };
 
             api.getUser().success(function(data) {
                 scope.user = data;
+            });
+
+            api.getPages().success(function(data) {
+                scope.pages = data;
             });
         }
     };

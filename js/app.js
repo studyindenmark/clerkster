@@ -5,7 +5,7 @@ angular.module('clerkster', ['ngAnimate', 'ngSanitize', 'ngRoute', 'angular-load
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
         $routeProvider
-            .when('/posts', {
+            .when('/pages/:page_id', {
                 templateUrl: '/html/partials/posts.html',
                 controller: PostsController,
             })
