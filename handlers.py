@@ -146,15 +146,9 @@ class FacebookHandler(BaseRequestHandler):
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
-  def get_posts(self, page_id):
+  def get_feed(self, page_id):
     self._set_access_token_from_page(page_id)
-    data = self.api.fetch(page_id + "/posts")
-    self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
-
-  def get_post(self, page_id, post_id):
-    self._set_access_token_from_page(page_id)
-    data = self.api.fetch(post_id)
+    data = self.api.fetch(page_id + "/feed")
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
