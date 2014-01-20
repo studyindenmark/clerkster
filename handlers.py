@@ -84,10 +84,14 @@ class FacebookHandler(BaseRequestHandler):
     self.api.access_token = m.access_token
 
   def get_page(self, page_id):
-    self._set_access_token_from_page(page_id)
-    data = self.api.fetch(page_id)
+    m = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+
+    if m == None:
+      self.error(404)
+      return
+
     self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
+    self.response.write(json.dumps(m.json))
 
   def get_feed(self, page_id):
     self._set_access_token_from_page(page_id)

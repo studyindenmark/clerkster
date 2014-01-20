@@ -10,6 +10,10 @@ function ApiService($http) {
             return $http.get('/api/pages');
         },
 
+        getPage: function(id) {
+            return $http.get('/api/pages/' + id);
+        },
+
         getUser: function() {
             return $http.get('/api/user');
         },

@@ -1,37 +1,12 @@
 <div class="row top-row">
-
-  <div class="col-md-2 col-sd-2 col-xs-2">
-    <button class="btn btn-default filter" ng-class="{active: showFilter}" ng-click="showFilter = !showFilter">
-      <i class="glyphicon glyphicon-cog"></i>
-    </button>
-  </div>
-
-  <div class="col-md-10 col-sd-10 col-xs-10" >
-    <form ng-submit="lowerVirtualKeyboard()">
-      <input class="form-control search-box" type="search" placeholder="Search posts" ng-model="searchText" ng-hide="showFilter" />
-    </form>
-  </div>
-
 </div>
 
 <div class="row">
   <div class="col-md-12">
 
-    <div class="posts" ng-hide="showFilter">
-      <p ng-click="showFilter = true" class="alert alert-info clickme" ng-show="getNumberOfFilters()">
-        {{getNumberOfFilters()}} {{getNumberOfFilters() === 1 ? 'filter' : 'filters'}}
-      </p>
-
-      <div class="list-group">
-        <a ng-repeat="post in posts" href="#" class="list-group-item">
-          <p class="list-group-item-heading">{{post.message}}</p>
-        </a>
-      </div>
-
-      <p class="alert alert-warning" ng-show="posts.length">No results.</p>
+    <div class="posts">
+      <p ng-show="page" class="alert alert-warning">This page will show posts for {{page.name}}</p>
     </div>
-
-    <filter degrees="authors" hide="hideFilter" ng-show="showFilter" subjects="subjects"></filter>
 
   </div>
 </div>
