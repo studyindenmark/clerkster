@@ -10,7 +10,6 @@ from webapp2_extras import auth, sessions
 from simpleauth import SimpleAuthHandler
 
 from facebook import FacebookAPI
-from twitter import TwitterAPI
 
 import models
 
@@ -52,10 +51,6 @@ class BaseRequestHandler(webapp2.RequestHandler):
     path = os.path.join(root, html_file)
     content = open(path).read()
     self.response.out.write(content)
-
-  def head(self, *args):
-    """Head is used by Twitter. If not there the tweet button shows 0"""
-    pass
     
     
 class RootHandler(BaseRequestHandler):
@@ -113,27 +108,6 @@ class UserHandler(BaseRequestHandler):
       'avatar_url': self.current_user.avatar_url,
       'name': self.current_user.name,
     }
-    self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
-
-
-class TwitterHandler(BaseRequestHandler):
-
-  def __init__(self, request, response):
-    self.initialize(request, response)
-
-    assert self.current_user.twitter_oauth_token
-    assert self.current_user.twitter_oauth_token_secret
-
-    self.api = TwitterAPI(
-      secrets.TWITTER_CONSUMER_KEY,
-      secrets.TWITTER_CONSUMER_SECRET,
-      self.current_user.twitter_oauth_token,
-      self.current_user.twitter_oauth_token_secret,
-    )
-
-  def get_tweets(self):
-    data = self.api.get_tweets(screen_name='youtify')
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
