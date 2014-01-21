@@ -1,0 +1,17 @@
+<p class="alert alert-info" ng-show="loading">Loading...</p>
+
+<div class="alert alert-warning" ng-show="!loading && pages.length === 0">
+	<p>Looks like you don't have any Facebook pages. To get started:</p>
+	<br/>
+	<ol>
+		<li>Create a page on Facebook.</li>
+		<li><a href="/logout" target="_self">Sign out from Clerkster.</a></li>
+		<li>Sign in again.</li>
+	</ol>
+</div>
+
+<div class="list-group">
+	<a ng-repeat="page in pages" class="list-group-item" href="/pages/{{page.id}}">
+		{{page.name}}
+	</a>
+</div>
