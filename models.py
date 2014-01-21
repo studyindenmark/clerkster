@@ -10,3 +10,7 @@ class FacebookPage(ndb.Model):
 		    'id': self.key.id(),
 		    'name': self.name,
 	    }
+
+
+class FacbookPost(ndb.Model):
+	message = ndb.StringProperty()

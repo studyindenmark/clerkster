@@ -80,7 +80,7 @@ class FacebookHandler(BaseRequestHandler):
     self.response.write(json.dumps(data))
 
   def _set_access_token_from_page(self, page_id):
-    m = models.FacebookPage.get_by_id(page_id)
+    m = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
     self.api.access_token = m.access_token
 
   def get_page(self, page_id):

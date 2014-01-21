@@ -2,8 +2,8 @@ function ApiService($http) {
     
     return {
 
-        getPosts: function() {
-            return $http.get('/api/posts');
+        getPosts: function(id) {
+            return $http.get('/api/pages/' + id + '/feed');
         },
 
         getPages: function() {
