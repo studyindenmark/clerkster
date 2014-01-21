@@ -13,8 +13,8 @@
 
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li ng-repeat="page in pages" ng-class="{ active: isCurrentPage(page.id) }">
-          <a href="/pages/{{page.id}}/posts">{{page.name}}</a>
+        <li ng-class="{ active: isCurrentPage('pages') }">
+          <a href="/pages">Pages</a>
         </li>
       </ul>
 

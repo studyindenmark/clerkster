@@ -5,7 +5,7 @@ angular.module('clerkster', ['ngAnimate', 'ngSanitize', 'ngRoute', 'angular-load
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
         $routeProvider
-            .when('/', {
+            .when('/pages', {
                 templateUrl: '/html/partials/welcome.html',
                 controller: WelcomeController,
             })
@@ -21,5 +21,5 @@ angular.module('clerkster', ['ngAnimate', 'ngSanitize', 'ngRoute', 'angular-load
                 templateUrl: '/html/partials/reports.html',
                 controller: ReportsController,
             })
-            .otherwise({redirectTo: '/'});
+            .otherwise({redirectTo: '/pages'});
     }]);
