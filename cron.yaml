@@ -1,0 +1,4 @@
+cron:
+- description: scan pages for new posts
+  url: /cron/fetch_pages
+  schedule: every 2 hours

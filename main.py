@@ -22,12 +22,18 @@ app_config = {
     
 # Map URLs to handlers
 routes = [
+  Route('/cron/fetch_pages', handler='cron.CronHandler:fetch_pages'),
+  Route('/worker/fetch_page', handler='worker.WorkerHandler:fetch_page'),
+
   Route('/api/user', handler='handlers.UserHandler:get_info'),
-  Route('/api/twitter/tweets', handler='handlers.TwitterHandler:get_tweets'),
-  Route('/api/pages', handler='handlers.FacebookHandler:get_pages'),
-  Route('/api/pages/<page_id>', handler='handlers.FacebookHandler:get_page', methods=['GET']),
-  Route('/api/pages/<page_id>/feed', handler='handlers.FacebookHandler:get_feed', methods=['GET']),
-  Route('/api/pages/<page_id>/threads', handler='handlers.FacebookHandler:get_threads', methods=['GET']),
+
+  Route('/api/pages', handler='handlers.ApiHandler:get_pages'),
+  Route('/api/pages/<page_id>', handler='handlers.ApiHandler:get_page', methods=['GET']),
+  Route('/api/pages/<page_id>/posts', handler='handlers.ApiHandler:get_posts', methods=['GET']),
+
+  Route('/api/facebook/pages/<page_id>/feed', handler='handlers.FacebookHandler:get_feed', methods=['GET']),
+  Route('/api/facebook/pages/<page_id>/threads', handler='handlers.FacebookHandler:get_threads', methods=['GET']),
+
   Route('/logout', handler='handlers.AuthHandler:logout', name='logout'),
   Route('/auth/<provider>', handler='handlers.AuthHandler:_simple_auth', name='auth_login'),
   Route('/auth/<provider>/callback', handler='handlers.AuthHandler:_auth_callback', name='auth_callback'),

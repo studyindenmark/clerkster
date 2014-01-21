@@ -62,21 +62,12 @@ class RootHandler(BaseRequestHandler):
       self.render('login.html')
     
 
-class FacebookHandler(BaseRequestHandler):
-
-  def __init__(self, request, response):
-    self.initialize(request, response)
-    self.api = FacebookAPI(self.current_user.facebook_access_token)
+class ApiHandler(BaseRequestHandler):
 
   def get_pages(self):
-    """Handles GET /facebook/pages"""    
     data = [m.json for m in models.FacebookPage.query(ancestor=self.current_user.key)]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
-
-  def _set_access_token_from_page(self, page_id):
-    m = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
-    self.api.access_token = m.access_token
 
   def get_page(self, page_id):
     m = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
@@ -87,6 +78,26 @@ class FacebookHandler(BaseRequestHandler):
 
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(m.json))
+
+  def get_posts(self, page_id):
+    page = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+    posts = models.FacebookPost\
+      .query(ancestor=page.key)\
+      .order(-models.FacebookPost.created_time)
+    data = [m.json for m in posts]
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
+
+
+class FacebookHandler(BaseRequestHandler):
+
+  def __init__(self, request, response):
+    self.initialize(request, response)
+    self.api = FacebookAPI(self.current_user.facebook_access_token)
+
+  def _set_access_token_from_page(self, page_id):
+    m = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+    self.api.access_token = m.access_token
 
   def get_feed(self, page_id):
     self._set_access_token_from_page(page_id)

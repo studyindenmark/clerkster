@@ -80,6 +80,14 @@ handlers:
 - url: /html
   static_dir: html
 
+- url: /cron.*
+  script: main.app
+  login: admin
+
+- url: /worker.*
+  script: main.app
+  login: admin
+
 - url: /.*
   script: main.app
 

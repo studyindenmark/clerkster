@@ -10,9 +10,8 @@
 
       <ul class="list-group">
         <li ng-repeat="post in posts" class="list-group-item">
-          <p>Type: {{post.type}}</p>
-          <p>Story or message: {{post.message || post.story}}</p>
-          <p>From: {{post.from.name}}</p>
+          <p>{{post.from.name}}:</p>
+          <p>{{post.message || post.story}}</p>
         </li>
       </ul>
     </div>

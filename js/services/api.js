@@ -3,7 +3,7 @@ function ApiService($http) {
     return {
 
         getPosts: function(id) {
-            return $http.get('/api/pages/' + id + '/feed');
+            return $http.get('/api/pages/' + id + '/posts');
         },
 
         getPages: function() {

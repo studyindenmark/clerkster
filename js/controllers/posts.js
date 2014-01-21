@@ -5,7 +5,7 @@ function PostsController($scope, $routeParams, api) {
     $scope.pageId = $routeParams.page_id;
 
     api.getPosts($routeParams.page_id).success(function(data) {
-        $scope.posts = data.data;
+        $scope.posts = data;
         $scope.loading = false;
         $scope.empty = $scope.posts.length === 0;
     });
