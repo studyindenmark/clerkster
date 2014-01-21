@@ -119,11 +119,6 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
   OAUTH2_CSRF_STATE = True
   
   USER_ATTRS = {
-    'twitter'  : {
-      'profile_image_url': 'avatar_url',
-      'screen_name'      : 'name',
-      'link'             : 'link'
-    },
     'facebook' : {
       'id'     : lambda id: ('avatar_url', 
         'http://graph.facebook.com/{0}/picture?type=square'.format(id)),
@@ -155,12 +150,7 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     
     user = self.auth.store.user_model.get_by_auth_id(auth_id)
     _attrs = self._to_user_model_attrs(data, self.USER_ATTRS[provider])
-
-    if provider == 'facebook':
-      _attrs['facebook_access_token'] = auth_info['access_token']
-    elif provider == 'twitter':
-      _attrs['twitter_oauth_token'] = auth_info['oauth_token']
-      _attrs['twitter_oauth_token_secret'] = auth_info['oauth_token_secret']
+    _attrs['facebook_access_token'] = auth_info['access_token']
 
     if user:
       logging.info('Found existing user to log in')
@@ -196,8 +186,7 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
         if ok:
           self.auth.set_session(self.auth.store.user_to_dict(user))
 
-    if provider == 'facebook':
-      self.fetch_facebook_pages_for_user(user)
+    self.fetch_facebook_pages_for_user(user)
 
     self.redirect('/')
 
