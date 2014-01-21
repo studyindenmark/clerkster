@@ -1,2 +1,3 @@
-function ReportsController($scope, $location, api) {
+function ReportsController($scope, $routeParams, api) {
+    $scope.pageId = $routeParams.page_id;
 }

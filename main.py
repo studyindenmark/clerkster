@@ -22,11 +22,6 @@ app_config = {
     
 # Map URLs to handlers
 routes = [
-  Route('/', handler='handlers.RootHandler'),  
-  Route('/posts', handler='handlers.RootHandler'),  
-  Route('/reports', handler='handlers.RootHandler'),  
-  Route('/pages/<page_id>', handler='handlers.RootHandler'),  
-  Route('/settings', handler='handlers.RootHandler'),  
   Route('/api/user', handler='handlers.UserHandler:get_info'),
   Route('/api/twitter/tweets', handler='handlers.TwitterHandler:get_tweets'),
   Route('/api/pages', handler='handlers.FacebookHandler:get_pages'),
@@ -36,6 +31,7 @@ routes = [
   Route('/logout', handler='handlers.AuthHandler:logout', name='logout'),
   Route('/auth/<provider>', handler='handlers.AuthHandler:_simple_auth', name='auth_login'),
   Route('/auth/<provider>/callback', handler='handlers.AuthHandler:_auth_callback', name='auth_callback'),
+  Route(r'<path:.*>', handler='handlers.RootHandler'),  
 ]
 
 app = WSGIApplication(routes, config=app_config, debug=True)
