@@ -8,13 +8,8 @@ class CronHandler(RequestHandler):
 
   def fetch_pages(self):
     keys = FacebookPage.query().fetch(keys_only=True)
-    data = []
 
     for key in keys:
-      data.append({
-        'user_id': key.parent().id(),
-        'page_id': key.id(),
-      })
       taskqueue.add(
         url='/worker/fetch_page',
         params={
@@ -22,7 +17,3 @@ class CronHandler(RequestHandler):
           'page_id': key.id(),
         }
       )
-
-    self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
-
