@@ -57,7 +57,10 @@ class RootHandler(BaseRequestHandler):
   def get(self, **kwargs):
     """Handles default landing page"""
     if self.logged_in:
-      self.render('index.html')
+      if self.current_user.facebook_access_token:
+        self.render('index.html')
+      else:
+        self.redirect('/logout')
     else:
       self.render('login.html')
     
