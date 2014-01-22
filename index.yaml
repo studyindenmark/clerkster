@@ -6,6 +6,18 @@
 
 indexes:
 
+- kind: FacebookPost
+  ancestor: yes
+  properties:
+  - name: created_time
+    direction: desc
+
+- kind: FacebookComment
+  ancestor: yes
+  properties:
+  - name: created_time
+    direction: asc
+
 # - kind: Cat
 #   ancestor: no
 #   properties:
