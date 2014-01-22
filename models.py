@@ -15,7 +15,7 @@ class FacebookPage(ndb.Model):
 
 class FacebookPost(ndb.Model):
   type = ndb.StringProperty()
-  message = ndb.StringProperty()
+  message = ndb.TextProperty()
   created_time = ndb.DateTimeProperty()
   updated_time = ndb.DateTimeProperty()
   from_id = ndb.StringProperty()
@@ -33,7 +33,7 @@ class FacebookPost(ndb.Model):
       'updated_time': self.updated_time.strftime('%s'),
       'comments': [m.json for m in FacebookComment.\
         query(ancestor=self.key).\
-        order(-FacebookComment.created_time)],
+        order(FacebookComment.created_time)],
       'from': {
         'id': self.from_id,
         'name': self.from_name,
@@ -44,7 +44,7 @@ class FacebookPost(ndb.Model):
 
 
 class FacebookComment(ndb.Model):
-  message = ndb.StringProperty()
+  message = ndb.TextProperty()
   created_time = ndb.DateTimeProperty()
   from_id = ndb.StringProperty()
   from_name = ndb.StringProperty()
