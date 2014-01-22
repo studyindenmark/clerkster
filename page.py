@@ -14,6 +14,42 @@ class FacebookPage(ndb.Model):
       'name': self.name,
     }
 
+  def fetch_threads(self):
+    api = FacebookAPI(self.access_token)
+    data = api.fetch(self.key.id() + '/threads')
+
+    for thread in data.get('data'):
+      messages = thread.get('messages').get('data')
+
+      if len(messages) == 0:
+        continue
+
+      # Let the first message be the 'post'. First message is the last item.
+      message = messages.pop()
+
+      post_model = FacebookPost(
+        parent=self.key,
+        id=message.get('id'),
+        created_time=FacebookAPI.parse_date(message.get('created_time')),
+        type='email',
+        from_id=message.get('from').get('id'),
+        from_name=message.get('from').get('name'),
+        message=message.get('message'),
+      )
+      post_model.put()
+
+      # Let the rest of the messages be comments:
+      for comment in messages:
+        comment_model = FacebookComment(
+          parent=post_model.key,
+          id=comment.get('id'),
+          created_time=FacebookAPI.parse_date(comment.get('created_time')),
+          from_id=comment.get('from').get('id'),
+          from_name=comment.get('from').get('name'),
+          message=comment.get('message'),
+        )
+        comment_model.put()
+
   def fetch_feed(self):
     api = FacebookAPI(self.access_token)
     data = api.fetch(self.key.id() + '/feed')

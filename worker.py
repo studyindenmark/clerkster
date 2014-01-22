@@ -15,3 +15,4 @@ class WorkerHandler(RequestHandler):
     page = key.get()
 
     page.fetch_feed()
+    page.fetch_threads()

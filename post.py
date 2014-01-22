@@ -18,7 +18,7 @@ class FacebookPost(ndb.Model):
       'type': self.type,
       'message': self.message,
       'created_time': self.created_time.strftime('%s'),
-      'updated_time': self.updated_time.strftime('%s'),
+      'updated_time': self.updated_time.strftime('%s') if self.updated_time else None,
       'comments': [m.json for m in FacebookComment.\
         query(ancestor=self.key).\
         order(FacebookComment.created_time)],
