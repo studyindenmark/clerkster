@@ -1,8 +1,7 @@
 import json
 from webapp2 import RequestHandler
 from google.appengine.api import taskqueue
-from models import FacebookPage
-
+from page import FacebookPage
 
 class CronHandler(RequestHandler):
 

@@ -11,7 +11,8 @@ from simpleauth import SimpleAuthHandler
 
 from facebook import FacebookAPI
 
-import models
+from page import FacebookPage
+from post import FacebookPost
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -68,12 +69,12 @@ class RootHandler(BaseRequestHandler):
 class ApiHandler(BaseRequestHandler):
 
   def get_pages(self):
-    data = [m.json for m in models.FacebookPage.query(ancestor=self.current_user.key)]
+    data = [m.json for m in FacebookPage.query(ancestor=self.current_user.key)]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def get_page(self, page_id):
-    m = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+    m = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
 
     if m == None:
       self.error(404)
@@ -83,10 +84,10 @@ class ApiHandler(BaseRequestHandler):
     self.response.write(json.dumps(m.json))
 
   def get_posts(self, page_id):
-    page = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
-    posts = models.FacebookPost\
+    page = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+    posts = FacebookPost\
       .query(ancestor=page.key)\
-      .order(-models.FacebookPost.created_time)
+      .order(-FacebookPost.created_time)
     data = [m.json for m in posts]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
@@ -99,7 +100,7 @@ class FacebookHandler(BaseRequestHandler):
     self.api = FacebookAPI(self.current_user.facebook_access_token)
 
   def _set_access_token_from_page(self, page_id):
-    m = models.FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+    m = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
     self.api.access_token = m.access_token
 
   def get_feed(self, page_id):
@@ -149,8 +150,8 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     self.api = FacebookAPI(self.current_user.facebook_access_token)
     pages = self.api.fetch("me/accounts")
     for page in pages['data']:
-      if models.FacebookPage.get_by_id(page['id']) == None:
-        m = models.FacebookPage(
+      if FacebookPage.get_by_id(page['id']) == None:
+        m = FacebookPage(
           parent=user.key,
           id=page['id'],
           access_token=page['access_token'],

@@ -1,17 +1,5 @@
 from google.appengine.ext import ndb
-
-
-class FacebookPage(ndb.Model):
-  name = ndb.StringProperty()
-  access_token = ndb.StringProperty()
-
-  @property
-  def json(self):
-    return {
-      'id': self.key.id(),
-      'name': self.name,
-    }
-
+from comment import FacebookComment
 
 class FacebookPost(ndb.Model):
   type = ndb.StringProperty()
@@ -42,23 +30,3 @@ class FacebookPost(ndb.Model):
       'scanned_user_name': self.scanned_user_name,
     }
 
-
-class FacebookComment(ndb.Model):
-  message = ndb.TextProperty()
-  created_time = ndb.DateTimeProperty()
-  from_id = ndb.StringProperty()
-  from_name = ndb.StringProperty()
-  from_category = ndb.StringProperty()
-
-  @property
-  def json(self):
-    return {
-      'id': self.key.id(),
-      'message': self.message,
-      'created_time': self.created_time.strftime('%s'),
-      'from': {
-        'id': self.from_id,
-        'name': self.from_name,
-        'category': self.from_category,
-      },
-    }
