@@ -118,6 +118,7 @@ class UserHandler(BaseRequestHandler):
     data = {
       'avatar_url': self.current_user.avatar_url,
       'name': self.current_user.name,
+      'email': self.current_user.email,
     }
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
@@ -129,12 +130,15 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
   # Enable optional OAuth 2.0 CSRF guard
   OAUTH2_CSRF_STATE = True
   
+  # Map Facebook API properties to our local DB User model properties.
+  # Facebook = LEFT, our User model = RIGHT.
   USER_ATTRS = {
     'facebook' : {
       'id'     : lambda id: ('avatar_url', 
         'http://graph.facebook.com/{0}/picture?type=square'.format(id)),
       'name'   : 'name',
-      'link'   : 'link'
+      'link'   : 'link',
+      'email'   : 'email',
     },
   }
 
