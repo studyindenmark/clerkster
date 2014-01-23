@@ -14,5 +14,4 @@ class WorkerHandler(RequestHandler):
     key = Key(User, user_id, FacebookPage, page_id)
     page = key.get()
 
-    page.fetch_feed()
-    page.fetch_threads()
+    page.fetch()

@@ -13,6 +13,7 @@ from facebook import FacebookAPI
 
 from page import FacebookPage
 from post import FacebookPost
+from log import FetchLogItem
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -58,10 +59,7 @@ class RootHandler(BaseRequestHandler):
   def get(self, **kwargs):
     """Handles default landing page"""
     if self.logged_in:
-      if self.current_user.facebook_access_token:
-        self.render('index.html')
-      else:
-        self.redirect('/logout')
+      self.render('index.html')
     else:
       self.render('login.html')
     
@@ -71,6 +69,18 @@ class ApiHandler(BaseRequestHandler):
   def get_pages(self):
     data = [m.json for m in FacebookPage.query(ancestor=self.current_user.key)]
     self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
+
+  def get_fetch_log(self, page_id):
+    page = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+
+    items = FetchLogItem.query(ancestor=page.key)\
+      .order(-FetchLogItem.date)\
+      .fetch(limit=1)
+
+    data = [item.json for item in items]
+
+    self.response.headers['Content-Type'] = 'text/plain'
     self.response.write(json.dumps(data))
 
   def get_page(self, page_id):
