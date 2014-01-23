@@ -2,11 +2,12 @@ import logging
 from google.appengine.ext.ndb import Key
 from webapp2 import RequestHandler
 from webapp2_extras.appengine.auth.models import User
-from page import FacebookPage
-from post import FacebookPost
-from comment import FacebookComment
-from log import FetchLogItem
+from models import FacebookPage
+from models import FacebookPost
+from models import FacebookComment
+from models import FetchLogItem
 from facebook import FacebookAPI
+
 
 def fetch_threads(page):
   api = FacebookAPI(page.access_token)

@@ -11,9 +11,9 @@ from simpleauth import SimpleAuthHandler
 
 from facebook import FacebookAPI
 
-from page import FacebookPage
-from post import FacebookPost
-from log import FetchLogItem
+from models import FacebookPage
+from models import FacebookPost
+from models import FetchLogItem
 
 
 class BaseRequestHandler(webapp2.RequestHandler):

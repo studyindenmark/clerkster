@@ -4,6 +4,7 @@ from datetime import datetime
 from urllib import urlencode
 from google.appengine.api import urlfetch
 
+
 class FacebookAPI(object):
 
   def __init__(self, access_token):
