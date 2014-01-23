@@ -25,8 +25,7 @@ routes = [
   Route('/cron/fetch_pages', handler='cron.CronHandler:fetch_pages'),
   Route('/worker/fetch_page', handler='worker.WorkerHandler:fetch_page'),
 
-  Route('/api/user', handler='handlers.UserHandler:get_info'),
-
+  Route('/api/user', handler='handlers.ApiHandler:get_user'),
   Route('/api/pages', handler='handlers.ApiHandler:get_pages'),
   Route('/api/pages/<page_id>', handler='handlers.ApiHandler:get_page', methods=['GET']),
   Route('/api/pages/<page_id>/posts', handler='handlers.ApiHandler:get_posts', methods=['GET']),

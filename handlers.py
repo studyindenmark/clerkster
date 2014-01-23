@@ -66,6 +66,15 @@ class RootHandler(BaseRequestHandler):
 
 class ApiHandler(BaseRequestHandler):
 
+  def get_user(self):
+    data = {
+      'avatar_url': self.current_user.avatar_url,
+      'name': self.current_user.name,
+      'email': self.current_user.email,
+    }
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
+
   def get_pages(self):
     data = [m.json for m in FacebookPage.query(ancestor=self.current_user.key)]
     self.response.headers['Content-Type'] = 'application/json'
@@ -122,18 +131,6 @@ class FacebookHandler(BaseRequestHandler):
   def get_threads(self, page_id):
     self._set_access_token_from_page(page_id)
     data = self.api.fetch(page_id + "/threads")
-    self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
-
-
-class UserHandler(BaseRequestHandler):
-
-  def get_info(self):
-    data = {
-      'avatar_url': self.current_user.avatar_url,
-      'name': self.current_user.name,
-      'email': self.current_user.email,
-    }
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
