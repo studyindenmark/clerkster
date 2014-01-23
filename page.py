@@ -6,13 +6,6 @@ class FacebookPage(ndb.Model):
   name = ndb.StringProperty()
   access_token = ndb.StringProperty()
 
-  @property
-  def json(self):
-    return {
-      'id': self.key.id(),
-      'name': self.name,
-    }
-
   def _post_put_hook(self, future):
     taskqueue.add(
       url='/worker/fetch_page',

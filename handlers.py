@@ -66,17 +66,65 @@ class RootHandler(BaseRequestHandler):
 
 class ApiHandler(BaseRequestHandler):
 
-  def get_user(self):
-    data = {
-      'avatar_url': self.current_user.avatar_url,
-      'name': self.current_user.name,
-      'email': self.current_user.email,
+  @classmethod
+  def _user_to_json(cls, user):
+    return {
+      'avatar_url': user.avatar_url,
+      'name': user.name,
+      'email': user.email,
     }
+
+  @classmethod
+  def _log_item_to_json(cls, item):
+    return {
+      'date': item.strftime('%s'),
+    }
+
+  @classmethod
+  def _page_to_json(cls, page):
+    return {
+      'id': page.key.id(),
+      'name': page.name,
+    }
+
+  @classmethod
+  def _post_to_json(cls, post):
+    return {
+      'id': post.key.id(),
+      'type': post.type,
+      'message': post.message,
+      'created_time': post.created_time.strftime('%s'),
+      'updated_time': post.updated_time.strftime('%s') if post.updated_time else None,
+      'comments': [ApiHandler._comment_to_json(m) for m in post.comments],
+      'from': {
+        'id': post.from_id,
+        'name': post.from_name,
+        'category': post.from_category,
+      },
+      'scanned_user_name': post.scanned_user_name,
+    }
+
+  @classmethod
+  def _comment_to_json(cls, comment):
+    return {
+      'id': comment.key.id(),
+      'message': comment.message,
+      'created_time': comment.created_time.strftime('%s'),
+      'from': {
+        'id': comment.from_id,
+        'name': comment.from_name,
+        'category': comment.from_category,
+      },
+    }
+
+  def get_user(self):
+    data = ApiHandler._user_to_json(self.current_user)
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def get_pages(self):
-    data = [m.json for m in FacebookPage.query(ancestor=self.current_user.key)]
+    pages = FacebookPage.query(ancestor=self.current_user.key)
+    data = [ApiHandler._page_to_json(m) for m in pages]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
@@ -87,8 +135,7 @@ class ApiHandler(BaseRequestHandler):
       .order(-FetchLogItem.date)\
       .fetch(limit=1)
 
-    data = [item.json for item in items]
-
+    data = [ApiHandler._log_item_to_json(item) for item in items]
     self.response.headers['Content-Type'] = 'text/plain'
     self.response.write(json.dumps(data))
 
@@ -99,15 +146,18 @@ class ApiHandler(BaseRequestHandler):
       self.error(404)
       return
 
+    data = ApiHandler._page_to_json(m)
     self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(m.json))
+    self.response.write(json.dumps(data))
 
   def get_posts(self, page_id):
     page = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+
     posts = FacebookPost\
       .query(ancestor=page.key)\
       .order(-FacebookPost.created_time)
-    data = [m.json for m in posts]
+
+    data = [ApiHandler._post_to_json(m) for m in posts]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 

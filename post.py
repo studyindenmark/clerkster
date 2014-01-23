@@ -12,21 +12,7 @@ class FacebookPost(ndb.Model):
   scanned_user_name = ndb.StringProperty()
 
   @property
-  def json(self):
-    return {
-      'id': self.key.id(),
-      'type': self.type,
-      'message': self.message,
-      'created_time': self.created_time.strftime('%s'),
-      'updated_time': self.updated_time.strftime('%s') if self.updated_time else None,
-      'comments': [m.json for m in FacebookComment.\
-        query(ancestor=self.key).\
-        order(FacebookComment.created_time)],
-      'from': {
-        'id': self.from_id,
-        'name': self.from_name,
-        'category': self.from_category,
-      },
-      'scanned_user_name': self.scanned_user_name,
-    }
-
+  def comments(self):
+    return FacebookComment.\
+      query(ancestor=self.key).\
+      order(FacebookComment.created_time)
