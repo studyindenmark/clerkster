@@ -81,9 +81,7 @@ class ApiHandler(BaseRequestHandler):
     return {
       'id': post.key.id(),
       'message': post.message,
-      'created_time': post.created_time.strftime('%s'),
-      'updated_time': post.updated_time.strftime('%s')
-        if post.updated_time else None,
+      'created_time': post.created_time.strftime('%Y-%m-%d %H:%M'),
       'replies': [ApiHandler._post_to_json(reply) for reply in post.replies]
         if include_replies else None,
       'from': {

@@ -31,10 +31,12 @@
 
       <ul class="list-group">
         <li ng-repeat="post in posts" class="list-group-item">
+          <p>{{post.created_time}}</p>
           <p>{{post.from.name}}:</p>
           <p>{{post.message}}</p>
           <ul class="replies" ng-show="post.replies.length > 0">
             <li ng-repeat="reply in post.replies" class="list-group-item">
+              <p>{{reply.created_time}}</p>
               <p>{{reply.from.name}}:</p>
               <p>{{reply.message}}</p>
             </li>
