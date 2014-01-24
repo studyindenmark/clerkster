@@ -22,7 +22,7 @@ function MainNav($location, api) {
       };
 
       scope.openSelectedPage = function () {
-        $location.path('/pages/' + scope.selectedPage + '/posts');
+        $location.path('/pages/' + scope.selectedPage);
       };
 
       scope.isCurrentPage = function (id) {

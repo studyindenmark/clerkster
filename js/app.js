@@ -1,6 +1,5 @@
 angular.module('clerkster', ['ngAnimate', 'ngSanitize', 'ngRoute', 'angular-loading-bar'])
     .directive('mainNav', MainNav)
-    .directive('pageNav', PageNav)
     .factory('api', ApiService)
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
@@ -9,17 +8,9 @@ angular.module('clerkster', ['ngAnimate', 'ngSanitize', 'ngRoute', 'angular-load
                 templateUrl: '/html/partials/welcome.html',
                 controller: WelcomeController,
             })
-            .when('/pages/:page_id/posts', {
-                templateUrl: '/html/partials/posts.html',
-                controller: PostsController,
-            })
-            .when('/pages/:page_id/reports', {
-                templateUrl: '/html/partials/reports.html',
-                controller: ReportsController,
-            })
-            .when('/pages/:page_id/reports', {
-                templateUrl: '/html/partials/reports.html',
-                controller: ReportsController,
+            .when('/pages/:page_id', {
+                templateUrl: '/html/partials/page.html',
+                controller: PageController,
             })
             .otherwise({redirectTo: '/pages'});
     }]);

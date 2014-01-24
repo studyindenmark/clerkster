@@ -1,4 +1,4 @@
-function PostsController($scope, $routeParams, $q, api) {
+function PageController($scope, $routeParams, $q, api) {
   $scope.pageId = $routeParams.page_id;
 
   api.getPosts($scope.pageId).success(function(data) {
