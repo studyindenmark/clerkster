@@ -18,12 +18,6 @@ indexes:
   - name: created_time
     direction: asc
 
-- kind: FetchLogItem
-  ancestor: yes
-  properties:
-  - name: date
-    direction: desc
-
 # - kind: Cat
 #   ancestor: no
 #   properties:
