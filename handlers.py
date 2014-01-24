@@ -7,7 +7,7 @@ import webapp2
 from webapp2_extras import auth, sessions
 from simpleauth import SimpleAuthHandler
 from facebook import FacebookAPI
-from models import FacebookPage
+from models import Page
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -69,12 +69,6 @@ class ApiHandler(BaseRequestHandler):
     }
 
   @classmethod
-  def _log_item_to_json(cls, item):
-    return {
-      'date': item.strftime('%s'),
-    }
-
-  @classmethod
   def _page_to_json(cls, page):
     return {
       'id': page.key.id(),
@@ -82,14 +76,15 @@ class ApiHandler(BaseRequestHandler):
     }
 
   @classmethod
-  def _post_to_json(cls, post):
+  def _post_to_json(cls, post, include_replies=False):
     return {
       'id': post.key.id(),
-      'type': post.type,
       'message': post.message,
       'created_time': post.created_time.strftime('%s'),
-      'updated_time': post.updated_time.strftime('%s') if post.updated_time else None,
-      'comments': [ApiHandler._comment_to_json(m) for m in post.comments],
+      'updated_time': post.updated_time.strftime('%s')
+        if post.updated_time else None,
+      'replies': [ApiHandler._post_to_json(reply) for reply in post.replies]
+        if include_replies else None,
       'from': {
         'id': post.from_id,
         'name': post.from_name,
@@ -98,33 +93,19 @@ class ApiHandler(BaseRequestHandler):
       'author': post.author,
     }
 
-  @classmethod
-  def _comment_to_json(cls, comment):
-    return {
-      'id': comment.key.id(),
-      'message': comment.message,
-      'created_time': comment.created_time.strftime('%s'),
-      'from': {
-        'id': comment.from_id,
-        'name': comment.from_name,
-        'category': comment.from_category,
-      },
-      'author': comment.author,
-    }
-
   def get_user(self):
     data = ApiHandler._user_to_json(self.current_user)
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def get_pages(self):
-    pages = FacebookPage.query(ancestor=self.current_user.key)
+    pages = Page.query(ancestor=self.current_user.key)
     data = [ApiHandler._page_to_json(m) for m in pages]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
   def get_page(self, page_id):
-    m = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+    m = Page.get_by_id(page_id, parent=self.current_user.key)
 
     if m == None:
       self.error(404)
@@ -135,8 +116,9 @@ class ApiHandler(BaseRequestHandler):
     self.response.write(json.dumps(data))
 
   def get_posts(self, page_id):
-    page = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
-    data = [ApiHandler._post_to_json(m) for m in page.posts]
+    page = Page.get_by_id(page_id, parent=self.current_user.key)
+    data = [ApiHandler._post_to_json(post, include_replies=True)
+      for post in page.posts]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 
@@ -148,7 +130,7 @@ class FacebookHandler(BaseRequestHandler):
     self.api = FacebookAPI(self.current_user.facebook_access_token)
 
   def _set_access_token_from_page(self, page_id):
-    m = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
+    m = Page.get_by_id(page_id, parent=self.current_user.key)
     self.api.access_token = m.access_token
 
   def get_feed(self, page_id):
@@ -186,8 +168,8 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     self.api = FacebookAPI(self.current_user.facebook_access_token)
     pages = self.api.fetch("me/accounts")
     for page in pages['data']:
-      if FacebookPage.get_by_id(page['id']) == None:
-        m = FacebookPage(
+      if Page.get_by_id(page['id']) == None:
+        m = Page(
           parent=user.key,
           id=page['id'],
           access_token=page['access_token'],

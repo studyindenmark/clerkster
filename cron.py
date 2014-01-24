@@ -1,13 +1,13 @@
 import json
 from webapp2 import RequestHandler
 from google.appengine.api import taskqueue
-from models import FacebookPage
+from models import Page
 
 
 class CronHandler(RequestHandler):
 
   def fetch_pages(self):
-    keys = FacebookPage.query().fetch(keys_only=True)
+    keys = Page.query().fetch(keys_only=True)
 
     for key in keys:
       taskqueue.add(

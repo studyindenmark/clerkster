@@ -2,15 +2,16 @@ from google.appengine.ext import ndb
 from google.appengine.api import taskqueue
 
 
-class FacebookPage(ndb.Model):
+class Page(ndb.Model):
   name = ndb.StringProperty()
   access_token = ndb.StringProperty()
 
   @property
   def posts(self):
-    return FacebookPost\
+    return Post\
       .query(ancestor=self.key)\
-      .order(-FacebookPost.created_time)
+      .order(-Post.created_time)\
+      .filter(Post.is_reply == False)
 
   def _post_put_hook(self, future):
     taskqueue.add(
@@ -21,27 +22,20 @@ class FacebookPage(ndb.Model):
     )
 
 
-class FacebookComment(ndb.Model):
-  message = ndb.TextProperty()
-  created_time = ndb.DateTimeProperty()
-  from_id = ndb.StringProperty()
-  from_name = ndb.StringProperty()
-  from_category = ndb.StringProperty()
-  author = ndb.StringProperty()
-
-
-class FacebookPost(ndb.Model):
-  type = ndb.StringProperty()
+class Post(ndb.Model):
+  is_reply = ndb.BooleanProperty(indexed=True, default=False)
+  is_private = ndb.BooleanProperty(default=False)
   message = ndb.TextProperty()
   created_time = ndb.DateTimeProperty()
   updated_time = ndb.DateTimeProperty()
   from_id = ndb.StringProperty()
   from_name = ndb.StringProperty()
   from_category = ndb.StringProperty()
-  author = ndb.StringProperty()
+  author = ndb.StringProperty(indexed=True)
 
   @property
-  def comments(self):
-    return FacebookComment.\
-      query(ancestor=self.key).\
-      order(FacebookComment.created_time)
+  def replies(self):
+    return Post\
+      .query(ancestor=self.key)\
+      .filter(Post.is_reply == True)\
+      .order(Post.created_time)
