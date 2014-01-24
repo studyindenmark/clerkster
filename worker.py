@@ -5,7 +5,6 @@ from webapp2_extras.appengine.auth.models import User
 from models import FacebookPage
 from models import FacebookPost
 from models import FacebookComment
-from models import FetchLogItem
 from facebook import FacebookAPI
 
 
@@ -63,10 +62,11 @@ def fetch_feed(page):
     )
     post_model.put()
 
-    if not 'comments' in data:
+    if not 'comments' in post:
       continue
 
-    for comment in post_data.get('comments').get('data'):
+    for comment in post.get('comments').get('data'):
+      print comment.get('message')
       comment_model = FacebookComment(
         parent=post_model.key,
         id=comment.get('id'),
@@ -90,5 +90,3 @@ class WorkerHandler(RequestHandler):
 
     fetch_feed(page)
     fetch_threads(page)
-
-    FetchLogItem(parent=page.key).put()
