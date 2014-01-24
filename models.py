@@ -16,8 +16,7 @@ class FacebookPage(ndb.Model):
     taskqueue.add(
       url='/worker/fetch_page',
       params={
-        'user_id': self.key.parent().id(),
-        'page_id': self.key.id(),
+        'key': self.key.urlsafe(),
       }
     )
 
@@ -28,6 +27,7 @@ class FacebookComment(ndb.Model):
   from_id = ndb.StringProperty()
   from_name = ndb.StringProperty()
   from_category = ndb.StringProperty()
+  author = ndb.StringProperty()
 
 
 class FacebookPost(ndb.Model):
@@ -38,7 +38,7 @@ class FacebookPost(ndb.Model):
   from_id = ndb.StringProperty()
   from_name = ndb.StringProperty()
   from_category = ndb.StringProperty()
-  scanned_user_name = ndb.StringProperty()
+  author = ndb.StringProperty()
 
   @property
   def comments(self):

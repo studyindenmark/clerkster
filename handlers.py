@@ -95,7 +95,7 @@ class ApiHandler(BaseRequestHandler):
         'name': post.from_name,
         'category': post.from_category,
       },
-      'scanned_user_name': post.scanned_user_name,
+      'author': post.author,
     }
 
   @classmethod
@@ -109,6 +109,7 @@ class ApiHandler(BaseRequestHandler):
         'name': comment.from_name,
         'category': comment.from_category,
       },
+      'author': comment.author,
     }
 
   def get_user(self):

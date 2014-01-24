@@ -1,11 +1,10 @@
 import logging
 from google.appengine.ext.ndb import Key
 from webapp2 import RequestHandler
-from webapp2_extras.appengine.auth.models import User
-from models import FacebookPage
 from models import FacebookPost
 from models import FacebookComment
 from facebook import FacebookAPI
+from utils import scan_for_author
 
 
 def fetch_threads(page):
@@ -29,6 +28,7 @@ def fetch_threads(page):
       from_id=message.get('from').get('id'),
       from_name=message.get('from').get('name'),
       message=message.get('message'),
+      author=scan_for_author(message.get('message')),
     )
     post_model.put()
 
@@ -41,6 +41,7 @@ def fetch_threads(page):
         from_id=comment.get('from').get('id'),
         from_name=comment.get('from').get('name'),
         message=comment.get('message'),
+        author=scan_for_author(comment.get('message')),
       )
       comment_model.put()
 
@@ -59,6 +60,7 @@ def fetch_feed(page):
       from_name=post.get('from').get('name'),
       from_category=post.get('from').get('category'),
       message=post.get('message') or post.get('story'),
+      author=scan_for_author(post.get('message')),
     )
     post_model.put()
 
@@ -66,7 +68,6 @@ def fetch_feed(page):
       continue
 
     for comment in post.get('comments').get('data'):
-      print comment.get('message')
       comment_model = FacebookComment(
         parent=post_model.key,
         id=comment.get('id'),
@@ -75,17 +76,14 @@ def fetch_feed(page):
         from_name=comment.get('from').get('name'),
         from_category=comment.get('from').get('category'),
         message=comment.get('message'),
+        author=scan_for_author(comment.get('message')),
       )
       comment_model.put()
 
 class WorkerHandler(RequestHandler):
 
   def fetch_page(self):
-     # User ids are ints while page ids are strings.
-    user_id = int(self.request.get('user_id'))
-    page_id = self.request.get('page_id')
-
-    key = Key(User, user_id, FacebookPage, page_id)
+    key = Key(urlsafe=self.request.get('key'))
     page = key.get()
 
     fetch_feed(page)

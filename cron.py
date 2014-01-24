@@ -13,7 +13,6 @@ class CronHandler(RequestHandler):
       taskqueue.add(
         url='/worker/fetch_page',
         params={
-          'user_id': key.parent().id(),
-          'page_id': key.id(),
+          'key': key.urlsafe(),
         }
       )
