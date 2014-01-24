@@ -130,12 +130,7 @@ class ApiHandler(BaseRequestHandler):
 
   def get_fetch_log(self, page_id):
     page = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
-
-    items = FetchLogItem.query(ancestor=page.key)\
-      .order(-FetchLogItem.date)\
-      .fetch(limit=1)
-
-    data = [ApiHandler._log_item_to_json(item) for item in items]
+    data = [ApiHandler._log_item_to_json(page.last_fetch_log_item)]
     self.response.headers['Content-Type'] = 'text/plain'
     self.response.write(json.dumps(data))
 
@@ -152,12 +147,7 @@ class ApiHandler(BaseRequestHandler):
 
   def get_posts(self, page_id):
     page = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
-
-    posts = FacebookPost\
-      .query(ancestor=page.key)\
-      .order(-FacebookPost.created_time)
-
-    data = [ApiHandler._post_to_json(m) for m in posts]
+    data = [ApiHandler._post_to_json(m) for m in page.posts]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 

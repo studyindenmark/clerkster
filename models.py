@@ -10,6 +10,18 @@ class FacebookPage(ndb.Model):
   name = ndb.StringProperty()
   access_token = ndb.StringProperty()
 
+  @property
+  def last_fetch_log_item(self):
+    return FetchLogItem.query(ancestor=self.key)\
+      .order(-FetchLogItem.date)\
+      .fetch(limit=1)
+
+  @property
+  def posts(self):
+    return FacebookPost\
+      .query(ancestor=self.key)\
+      .order(-FacebookPost.created_time)
+
   def _post_put_hook(self, future):
     taskqueue.add(
       url='/worker/fetch_page',
