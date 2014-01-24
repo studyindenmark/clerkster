@@ -2,19 +2,9 @@ from google.appengine.ext import ndb
 from google.appengine.api import taskqueue
 
 
-class FetchLogItem(ndb.Model):
-  date = ndb.DateTimeProperty(auto_now_add=True)
-
-
 class FacebookPage(ndb.Model):
   name = ndb.StringProperty()
   access_token = ndb.StringProperty()
-
-  @property
-  def last_fetch_log_item(self):
-    return FetchLogItem.query(ancestor=self.key)\
-      .order(-FetchLogItem.date)\
-      .fetch(limit=1)
 
   @property
   def posts(self):

@@ -6,10 +6,6 @@ function ApiService($http) {
             return $http.get('/api/pages/' + id + '/posts');
         },
 
-        getFetchLog: function(id) {
-            return $http.get('/api/pages/' + id + '/fetch_log');
-        },
-
         getPages: function() {
             return $http.get('/api/pages');
         },

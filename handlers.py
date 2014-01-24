@@ -3,17 +3,11 @@ import logging
 import secrets
 import json
 import os.path
-
 import webapp2
 from webapp2_extras import auth, sessions
-
 from simpleauth import SimpleAuthHandler
-
 from facebook import FacebookAPI
-
 from models import FacebookPage
-from models import FacebookPost
-from models import FetchLogItem
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -126,12 +120,6 @@ class ApiHandler(BaseRequestHandler):
     pages = FacebookPage.query(ancestor=self.current_user.key)
     data = [ApiHandler._page_to_json(m) for m in pages]
     self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
-
-  def get_fetch_log(self, page_id):
-    page = FacebookPage.get_by_id(page_id, parent=self.current_user.key)
-    data = [ApiHandler._log_item_to_json(page.last_fetch_log_item)]
-    self.response.headers['Content-Type'] = 'text/plain'
     self.response.write(json.dumps(data))
 
   def get_page(self, page_id):

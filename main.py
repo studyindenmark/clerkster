@@ -24,7 +24,6 @@ routes = [
   Route('/api/pages', handler='handlers.ApiHandler:get_pages'),
   Route('/api/pages/<page_id>', handler='handlers.ApiHandler:get_page', methods=['GET']),
   Route('/api/pages/<page_id>/posts', handler='handlers.ApiHandler:get_posts', methods=['GET']),
-  Route('/api/pages/<page_id>/fetc_log', handler='handlers.ApiHandler:get_fetch_log', methods=['GET']),
 
   Route('/api/facebook/pages/<page_id>/feed', handler='handlers.FacebookHandler:get_feed', methods=['GET']),
   Route('/api/facebook/pages/<page_id>/threads', handler='handlers.FacebookHandler:get_threads', methods=['GET']),

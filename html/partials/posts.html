@@ -5,8 +5,7 @@
 
 
     <div class="posts">
-      <p ng-show="fetching" class="alert alert-info">Fetching posts and messages from Facebook, hold on a sec...</p>
-      <p ng-show="empty" class="alert alert-warning">This page has no posts.</p>
+      <p ng-show="empty" class="alert alert-warning">This page has no posts yet. Maybe we have not fetched them from Facebook yet. Try reloading the page in a minute or so.</p>
 
       <ul class="list-group">
         <li ng-repeat="post in posts" class="list-group-item">
