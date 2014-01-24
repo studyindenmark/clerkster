@@ -7,6 +7,14 @@ class Page(ndb.Model):
   access_token = ndb.StringProperty()
 
   @property
+  def authors(self):
+    return [post.author for post in Post.query(
+      ancestor=self.key,
+      projection=['author'],
+      distinct=True
+    )]
+
+  @property
   def posts(self):
     return Post\
       .query(ancestor=self.key)\

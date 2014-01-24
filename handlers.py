@@ -73,6 +73,7 @@ class ApiHandler(BaseRequestHandler):
     return {
       'id': page.key.id(),
       'name': page.name,
+      'authors': page.authors,
     }
 
   @classmethod
