@@ -4,11 +4,13 @@ from webapp2 import RequestHandler
 from models import Post
 from facebook import FacebookAPI
 from utils import scan_for_author
+import search
 
 
 def fetch_threads(page):
   api = FacebookAPI(page.access_token)
   data = api.fetch(page.key.id() + '/threads')
+  docs = []
 
   for thread in data.get('data'):
     messages = thread.get('messages').get('data')
@@ -31,6 +33,7 @@ def fetch_threads(page):
       author=scan_for_author(message.get('message')),
     )
     post_model.put()
+    docs.append(search.create_document(post_model))
 
     # Let the rest of the messages be replies:
     for reply in messages:
@@ -46,10 +49,14 @@ def fetch_threads(page):
         author=scan_for_author(reply.get('message')),
       )
       reply_model.put()
+      docs.append(search.create_document(reply_model))
+
+  search.index(page, docs)
 
 def fetch_feed(page):
   api = FacebookAPI(page.access_token)
   data = api.fetch(page.key.id() + '/feed')
+  docs = []
 
   for post in data.get('data'):
     post_model = Post(
@@ -64,6 +71,7 @@ def fetch_feed(page):
       author=scan_for_author(post.get('message')),
     )
     post_model.put()
+    docs.append(search.create_document(post_model))
 
     if not 'comments' in post:
       continue
@@ -81,6 +89,9 @@ def fetch_feed(page):
         author=scan_for_author(comment.get('message')),
       )
       comment_model.put()
+      docs.append(search.create_document(comment_model))
+
+  search.index(page, docs)
 
 class WorkerHandler(RequestHandler):
 
