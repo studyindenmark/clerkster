@@ -8,6 +8,7 @@ from webapp2_extras import auth, sessions
 from simpleauth import SimpleAuthHandler
 from facebook import FacebookAPI
 from models import Page
+from search import search_posts
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -92,6 +93,17 @@ class ApiHandler(BaseRequestHandler):
       'author': post.author,
     }
 
+  @classmethod
+  def _doc_to_json(cls, doc):
+    return {
+      'message': doc['message'],
+      'created_time': doc['created_time'].strftime('%Y-%m-%d %H:%M'),
+      'from': {
+        'name': doc['from_name'],
+      },
+      'author': doc['author'],
+    }
+
   def get_user(self):
     data = ApiHandler._user_to_json(self.current_user)
     self.response.headers['Content-Type'] = 'application/json'
@@ -118,6 +130,13 @@ class ApiHandler(BaseRequestHandler):
     page = Page.get_by_id(page_id, parent=self.current_user.key)
     data = [ApiHandler._post_to_json(post, include_replies=True)
       for post in page.posts]
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
+
+  def search(self, page_id):
+    q = self.request.get('q')
+    page = Page.get_by_id(page_id, parent=self.current_user.key)
+    data = [ApiHandler._doc_to_json(doc) for doc in search_posts(page, q)]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 

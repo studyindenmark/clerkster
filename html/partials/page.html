@@ -3,9 +3,10 @@
 
     <div class="form-group">
       <label for="author">Author</label>
-      <select name="author" class="form-control" model="author">
-        <option ng-repeat="author in page.authors" value="author">
-          {{author === null ? "Everyone" : author}}
+      <select ng-change="search()" name="author" class="form-control" ng-model="author">
+        <option value="">Everyone</option>
+        <option ng-repeat="author in page.authors" value="{{author}}">
+          {{author}}
         </option>
       </select>
     </div>
@@ -27,7 +28,7 @@
   <div class="col-md-12">
 
     <div class="posts">
-      <p ng-show="empty" class="alert alert-warning">This page has no posts yet. Maybe we have not fetched them from Facebook yet. Try reloading the page in a minute or so.</p>
+      <p ng-show="empty" class="alert alert-warning">No posts found.</p>
 
       <ul class="list-group">
         <li ng-repeat="post in posts" class="list-group-item">

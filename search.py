@@ -17,6 +17,14 @@ def index(page, docs):
     index.put(docs[start:start+200])
     start += 200
 
+def search_posts(page, q):
+  ret = []
+  result = search.Index(page.key.urlsafe()).search(q)
 
-def find(page, q):
-  return []
+  for doc in result:
+    d = {}
+    for field in doc.fields:
+      d[field.name] = field.value
+    ret.append(d)
+
+  return ret

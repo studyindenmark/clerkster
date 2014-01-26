@@ -12,7 +12,7 @@ class Page(ndb.Model):
       ancestor=self.key,
       projection=['author'],
       distinct=True
-    )]
+    ) if post.author != None]
 
   @property
   def posts(self):
