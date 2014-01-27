@@ -94,13 +94,15 @@ class ApiHandler(BaseRequestHandler):
     }
 
   @classmethod
-  def _doc_to_json(cls, doc):
+  def _doc_to_json(cls, doc, include_replies=False):
     return {
       'message': doc['message'],
       'created_time': doc['created_time'].strftime('%Y-%m-%d %H:%M'),
       'from': {
         'name': doc['from_name'],
       },
+      'replies': [ApiHandler._doc_to_json(reply) for reply in doc['replies']]
+        if doc.get('replies') else None,
       'author': doc['author'],
     }
 
