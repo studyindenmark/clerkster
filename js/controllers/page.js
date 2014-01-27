@@ -16,11 +16,11 @@ function PageController($scope, $location, $routeParams, $q, api) {
   }
 
   if ($scope.from) {
-    q.push('created_time > ' + $scope.from);
+    q.push('created_time >= ' + $scope.from);
   }
 
   if ($scope.to) {
-    q.push('created_time < ' + $scope.to);
+    q.push('created_time <= ' + $scope.to);
   }
 
   if ($scope.message) {

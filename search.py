@@ -17,9 +17,21 @@ def index(page, docs):
     index.put(docs[start:start+200])
     start += 200
 
-def search_posts(page, q):
+def search_posts(page, query_string):
   ret = []
-  result = search.Index(page.key.urlsafe()).search(q)
+
+  expr_list = [
+    search.SortExpression(
+      expression="created_time",
+      direction=search.SortExpression.DESCENDING
+    )
+  ]
+
+  sort_options = search.SortOptions(expressions=expr_list)
+  query_options = search.QueryOptions(sort_options=sort_options)
+
+  query = search.Query(query_string=query_string, options=query_options)
+  result = search.Index(page.key.urlsafe()).search(query)
 
   for doc in result:
     d = {}
