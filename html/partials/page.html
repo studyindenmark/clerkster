@@ -1,5 +1,5 @@
 <div class="navbar navbar-default" role="navigation">
-  <form class="navbar-form navbar-left" role="search">
+  <form class="navbar-form navbar-left" role="search" ng-submit="update()">
 
     <div class="form-group">
       <label for="author">Author</label>
@@ -12,13 +12,23 @@
     </div>
 
     <div class="form-group">
-      <label for="author">From</label>
-      <input type="date" class="form-control" ng-model="from" ng-change="update()" />
+      <label for="from">From</label>
+      <input name="from" type="date" class="form-control" ng-model="from" ng-change="update()">
     </div>
 
     <div class="form-group">
-      <label for="author">To</label>
-      <input type="date" class="form-control" ng-model="to" ng-change="update()" />
+      <label for="to">To</label>
+      <input name="to" type="date" class="form-control" ng-model="to" ng-change="update()">
+    </div>
+
+    <div class="form-group">
+      <label for="message">Message</label>
+      <div class="input-group">
+        <input type="text" class="form-control" ng-model="message">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-default" type="button">Search</button>
+        </span>
+      </div>
     </div>
 
   </form>
