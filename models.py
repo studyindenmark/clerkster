@@ -10,12 +10,14 @@ class User(webapp2_extras.appengine.auth.models.User):
     return Page.query(ancestor=self.key)
 
   def _post_put_hook(self, future):
-    taskqueue.add(
+    queue = taskqueue.Queue('facebook')
+    task = taskqueue.Task(
       url='/worker/fetch_pages',
       params={
         'key': self.key.urlsafe(),
       }
     )
+    queue.add(task)
 
 
 class Page(ndb.Model):
@@ -38,12 +40,14 @@ class Page(ndb.Model):
       .filter(Post.is_reply == False)
 
   def _post_put_hook(self, future):
-    taskqueue.add(
+    queue = taskqueue.Queue('facebook')
+    task = taskqueue.Task(
       url='/worker/fetch_page',
       params={
         'key': self.key.urlsafe(),
       }
     )
+    queue.add(task)
 
 
 class Post(ndb.Model):
