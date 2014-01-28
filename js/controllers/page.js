@@ -30,7 +30,9 @@ function PageController($scope, $location, $routeParams, $q, api) {
   q = q.join(' AND ');
 
   api.search($scope.pageId, q).success(function(data) {
-    $scope.posts = data;
+    $scope.posts = data.posts;
+    $scope.nPosts = data.nr_of_posts;
+    $scope.nComments = data.nr_of_comments;
     $scope.empty = $scope.posts.length === 0;
   });
 

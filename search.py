@@ -32,7 +32,9 @@ def doc_to_json(doc):
 
 
 def search_posts(page, query_string):
-  ret = []
+  nr_of_posts = 0
+  nr_of_comments = 0
+  posts = []
   parents = {}
   index = search.Index(page.key.urlsafe())
 
@@ -55,6 +57,7 @@ def search_posts(page, query_string):
 
     if parent_key:
       parent = None
+
       if parent_key in parents:
         parent = parents[parent_key]
       else:
@@ -62,10 +65,18 @@ def search_posts(page, query_string):
         parent = doc_to_json(parent_doc)
         parent['replies'] = []
         parents[parent_key] = parent
-        ret.append(parent)
+        posts.append(parent)
+        nr_of_posts += 1
+
       parent['replies'].append(doc_to_json(doc))
+      nr_of_comments += 1
     else:
       d = doc_to_json(doc)
-      ret.append(d)
+      posts.append(d)
+      nr_of_posts += 1
 
-  return ret
+  return {
+    'posts': posts,
+    'nr_of_posts': nr_of_posts,
+    'nr_of_comments': nr_of_comments,
+  }

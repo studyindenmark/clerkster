@@ -116,9 +116,13 @@ class ApiHandler(BaseRequestHandler):
   def search(self, page_id):
     q = self.request.get('q')
     page = Page.get_by_id(page_id, parent=self.current_user.key)
-    data = [ApiHandler._doc_to_json(doc) for doc in search_posts(page, q)]
+
+    results = search_posts(page, q)
+    results['posts'] = [ApiHandler._doc_to_json(doc)
+      for doc in results['posts']]
+
     self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
+    self.response.write(json.dumps(results))
 
 
 class FacebookHandler(BaseRequestHandler):
