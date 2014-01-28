@@ -40,9 +40,12 @@
   <br/>
 </div>
 
-<h5 ng-show="posts.length > 0">
-  {{nPosts}} {{nPosts == 1 ? 'post' : 'posts'}}, {{nComments}} {{nComments == 1 ? 'comment' : 'comments'}}
-</h5>
+<div ng-show="posts.length > 0">
+  <h5>{{nPosts}} {{nPosts == 1 ? 'post' : 'posts'}}, {{nComments}} {{nComments == 1 ? 'comment' : 'comments'}}</h5>
+  <h5 class="visible-print">Author: {{author || 'anyone'}}</h5>
+  <h5 class="visible-print">Containing: {{message ? '"' + message + '"' : 'anything'}}</h5>
+</div>
+
 
 <div class="row">
   <div class="col-md-12">

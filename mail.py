@@ -2,10 +2,8 @@ from datetime import datetime
 from datetime import timedelta
 from google.appengine.api import mail
 from search import search_posts
-
-
-FROM = 'per@youtify.com' # <-- chanage
-DOMAIN = 'http://studyindenmark-clerkster.appspot.com'
+from config import EMAIL_SENDER
+from config import EMAIL_DOMAIN
 
 
 def send_report(user):
@@ -25,7 +23,7 @@ def send_report(user):
     from_date = first_day_last_month.strftime('%Y-%m-%d')
     to_date = last_day_last_month.strftime('%Y-%m-%d')
 
-    link = DOMAIN + '/pages/%s?from=%s&to=%s' % (
+    link = EMAIL_DOMAIN + '/pages/%s?from=%s&to=%s' % (
       page.key.id(),
       from_date,
       to_date,
@@ -36,15 +34,15 @@ def send_report(user):
       'created_time >= %s AND created_time <= %s' % (from_date, to_date)
     )
 
-    body += '%s: %s\n' % (page.name, link)
+    body += '%s\n' % page.name
     body += 'Posts: %s\n' % results['nr_of_posts']
     body += 'Comments: %s\n' % results['nr_of_comments']
-    body += '\n\n'
+    body += '%s\n\n' % link
 
   print body
 
   mail.send_mail(
-    sender="Clerkster <%s>" % FROM,
+    sender=EMAIL_SENDER,
     to="%s <%s>" % (user.name, user.email),
     subject=subject,
     body=body
