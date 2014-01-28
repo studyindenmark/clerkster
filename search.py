@@ -1,3 +1,4 @@
+from datetime import datetime
 from google.appengine.api import search 
 
 def create_document(post):
@@ -38,6 +39,7 @@ def search_posts(page, query_string):
   expr_list = [
     search.SortExpression(
       expression="created_time",
+      default_value=datetime.now(),
       direction=search.SortExpression.DESCENDING
     )
   ]

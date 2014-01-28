@@ -96,7 +96,7 @@ class ApiHandler(BaseRequestHandler):
     self.response.write(json.dumps(data))
 
   def get_pages(self):
-    pages = Page.query(ancestor=self.current_user.key)
+    pages = self.current_user.pages
     data = [ApiHandler._page_to_json(m) for m in pages]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
