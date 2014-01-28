@@ -1,6 +1,7 @@
 from datetime import datetime
 from datetime import timedelta
 from google.appengine.api import mail
+from search import search_posts
 
 
 FROM = 'per@youtify.com' # <-- chanage
@@ -21,12 +22,24 @@ def send_report(user):
   body = ''
 
   for page in user.pages:
+    from_date = first_day_last_month.strftime('%Y-%m-%d')
+    to_date = last_day_last_month.strftime('%Y-%m-%d')
+
     link = DOMAIN + '/pages/%s?from=%s&to=%s' % (
       page.key.id(),
-      first_day_last_month.strftime('%Y-%m-%d'),
-      last_day_last_month.strftime('%Y-%m-%d'),
+      from_date,
+      to_date,
     )
-    body += '%s: %s\n\n' % (page.name, link)
+
+    results = search_posts(
+      page,
+      'created_time >= %s AND created_time <= %s' % (from_date, to_date)
+    )
+
+    body += '%s: %s\n' % (page.name, link)
+    body += 'Posts: %s\n' % results['nr_of_posts']
+    body += 'Comments: %s\n' % results['nr_of_comments']
+    body += '\n\n'
 
   print body
 
