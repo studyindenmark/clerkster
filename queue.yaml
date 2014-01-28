@@ -1,4 +1,8 @@
 queue:
-- name: default
+- name: facebook
   rate: 1/s
   max_concurrent_requests: 1
+
+- name: mail
+  rate: 2/m
+  max_concurrent_requests: 2
