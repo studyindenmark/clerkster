@@ -78,22 +78,6 @@ class ApiHandler(BaseRequestHandler):
     }
 
   @classmethod
-  def _post_to_json(cls, post, include_replies=False):
-    return {
-      'id': post.key.id(),
-      'message': post.message,
-      'created_time': post.created_time.strftime('%Y-%m-%d %H:%M'),
-      'replies': [ApiHandler._post_to_json(reply) for reply in post.replies]
-        if include_replies else None,
-      'from': {
-        'id': post.from_id,
-        'name': post.from_name,
-        'category': post.from_category,
-      },
-      'author': post.author,
-    }
-
-  @classmethod
   def _doc_to_json(cls, doc, include_replies=False):
     return {
       'message': doc['message'],
@@ -125,13 +109,6 @@ class ApiHandler(BaseRequestHandler):
       return
 
     data = ApiHandler._page_to_json(m)
-    self.response.headers['Content-Type'] = 'application/json'
-    self.response.write(json.dumps(data))
-
-  def get_posts(self, page_id):
-    page = Page.get_by_id(page_id, parent=self.current_user.key)
-    data = [ApiHandler._post_to_json(post, include_replies=True)
-      for post in page.posts]
     self.response.headers['Content-Type'] = 'application/json'
     self.response.write(json.dumps(data))
 

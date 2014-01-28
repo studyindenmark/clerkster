@@ -29,17 +29,10 @@ function PageController($scope, $location, $routeParams, $q, api) {
 
   q = q.join(' AND ');
 
-  if (q) {
-    api.search($scope.pageId, q).success(function(data) {
-      $scope.posts = data;
-      $scope.empty = $scope.posts.length === 0;
-    });
-  } else {
-    api.getPosts($scope.pageId).success(function(data) {
-      $scope.posts = data;
-      $scope.empty = $scope.posts.length === 0;
-    });
-  }
+  api.search($scope.pageId, q).success(function(data) {
+    $scope.posts = data;
+    $scope.empty = $scope.posts.length === 0;
+  });
 
   $scope.update = function() {
     $location.search('author', $scope.author || null);
