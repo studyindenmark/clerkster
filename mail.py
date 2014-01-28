@@ -4,6 +4,7 @@ from google.appengine.api import mail
 
 
 FROM = 'per@youtify.com' # <-- chanage
+DOMAIN = 'http://studyindenmark-clerkster.appspot.com'
 
 
 def send_report(user):
@@ -17,7 +18,15 @@ def send_report(user):
   )
 
   subject = 'Your Clerkster report, %s' % last_day_last_month.strftime('%b %Y') # e.g. 'Jan 2014'
-  body = 'email body is coming...'
+  body = ''
+
+  for page in user.pages:
+    link = DOMAIN + '/pages/%s?from=%s&to=%s' % (
+      page.key.id(),
+      first_day_last_month.strftime('%Y-%m-%d'),
+      last_day_last_month.strftime('%Y-%m-%d'),
+    )
+    body += '%s: %s\n\n' % (page.name, link)
 
   print body
 
