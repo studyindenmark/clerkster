@@ -11,6 +11,7 @@ app_config = {
     'secret_key': SESSION_KEY,
   },
   'webapp2_extras.auth': {
+    'user_model': 'models.User',
     'user_attributes': [],
   }
 }
@@ -21,6 +22,7 @@ routes = [
   Route('/cron/send_monthly_reports', handler='cron.CronHandler:send_monthly_reports'),
   
   Route('/worker/fetch_page', handler='worker.WorkerHandler:fetch_page'),
+  Route('/worker/fetch_pages', handler='worker.WorkerHandler:fetch_pages'),
 
   Route('/api/user', handler='handlers.ApiHandler:get_user'),
   Route('/api/pages', handler='handlers.ApiHandler:get_pages'),

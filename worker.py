@@ -2,6 +2,7 @@ import logging
 from google.appengine.ext.ndb import Key
 from webapp2 import RequestHandler
 from models import Post
+from models import Page
 from facebook import FacebookAPI
 from utils import scan_for_author
 import search
@@ -93,7 +94,24 @@ def fetch_feed(page):
 
   search.index(page, docs)
 
+def fetch_pages(user):
+  api = FacebookAPI(user.facebook_access_token)
+  pages = api.fetch("me/accounts")
+  for page in pages['data']:
+    m = Page(
+      parent=user.key,
+      id=page['id'],
+      access_token=page['access_token'],
+      name=page['name'],
+    )
+    m.put()
+
 class WorkerHandler(RequestHandler):
+
+  def fetch_pages(self):
+    key = Key(urlsafe=self.request.get('key'))
+    user = key.get()
+    fetch_pages(user)
 
   def fetch_page(self):
     key = Key(urlsafe=self.request.get('key'))

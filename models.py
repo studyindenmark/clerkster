@@ -1,5 +1,21 @@
 from google.appengine.ext import ndb
 from google.appengine.api import taskqueue
+import webapp2_extras.appengine.auth.models
+
+
+class User(webapp2_extras.appengine.auth.models.User):
+
+  @property
+  def pages(self):
+    return Page.query(ancestor=self.key)
+
+  def _post_put_hook(self, future):
+    taskqueue.add(
+      url='/worker/fetch_pages',
+      params={
+        'key': self.key.urlsafe(),
+      }
+    )
 
 
 class Page(ndb.Model):

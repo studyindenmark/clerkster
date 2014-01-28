@@ -184,18 +184,6 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     },
   }
 
-  def fetch_facebook_pages_for_user(self, user):
-    self.api = FacebookAPI(self.current_user.facebook_access_token)
-    pages = self.api.fetch("me/accounts")
-    for page in pages['data']:
-      if Page.get_by_id(page['id']) == None:
-        m = Page(
-          parent=user.key,
-          id=page['id'],
-          access_token=page['access_token'],
-          name=page['name'],
-        )
-        m.put()
 
   def _on_signin(self, data, auth_info, provider):
     """Callback whenever a new or existing user is logging in.
@@ -242,8 +230,6 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
         ok, user = self.auth.store.user_model.create_user(auth_id, **_attrs)
         if ok:
           self.auth.set_session(self.auth.store.user_to_dict(user))
-
-    self.fetch_facebook_pages_for_user(user)
 
     self.redirect('/')
 
