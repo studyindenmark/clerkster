@@ -85,7 +85,8 @@ class ApiHandler(BaseRequestHandler):
       'from': {
         'name': doc['from_name'],
       },
-      'replies': [ApiHandler._doc_to_json(reply) for reply in doc['replies']]
+      'replies': [ApiHandler._doc_to_json(reply) for reply in
+        reversed(doc['replies'])]
         if doc.get('replies') else None,
       'author': doc['author'],
     }
