@@ -18,6 +18,8 @@ app_config = {
     
 # Map URLs to handlers
 routes = [
+  Route('/migrate/reset', handler='migrate.MigrateHandler:reset'),
+
   Route('/cron/fetch_pages', handler='cron.CronHandler:fetch_pages'),
   Route('/cron/send_monthly_reports', handler='cron.CronHandler:send_monthly_reports'),
   
