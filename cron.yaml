@@ -4,5 +4,5 @@ cron:
   schedule: every 2 hours
 
 - description: send monthly reports
-  url: /cron/send_monthly_reports
+  url: /cron/send_reports
   schedule: 1 of month 00:00

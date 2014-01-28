@@ -19,10 +19,11 @@ app_config = {
 # Map URLs to handlers
 routes = [
   Route('/cron/fetch_pages', handler='cron.CronHandler:fetch_pages'),
-  Route('/cron/send_monthly_reports', handler='cron.CronHandler:send_monthly_reports'),
+  Route('/cron/send_reports', handler='cron.CronHandler:send_reports'),
   
   Route('/worker/fetch_page', handler='worker.WorkerHandler:fetch_page'),
   Route('/worker/fetch_pages', handler='worker.WorkerHandler:fetch_pages'),
+  Route('/worker/send_report', handler='worker.WorkerHandler:send_report'),
 
   Route('/api/user', handler='handlers.ApiHandler:get_user'),
   Route('/api/pages', handler='handlers.ApiHandler:get_pages'),

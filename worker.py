@@ -6,6 +6,7 @@ from models import Page
 from facebook import FacebookAPI
 from utils import scan_for_author
 import search
+import mail
 
 
 def fetch_threads(page):
@@ -119,3 +120,8 @@ class WorkerHandler(RequestHandler):
 
     fetch_feed(page)
     fetch_threads(page)
+
+  def send_report(self):
+    key = Key(urlsafe=self.request.get('key'))
+    user = key.get()
+    mail.send_report(user)
