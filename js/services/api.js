@@ -1,22 +1,19 @@
 function ApiService($http) {
+  return {
+    search: function(id, q) {
+      return $http.get('/api/pages/' + id +'/search?q=' + q);
+    },
     
-    return {
+    getPages: function() {
+      return $http.get('/api/pages');
+    },
 
-        getPages: function() {
-            return $http.get('/api/pages');
-        },
+    getPage: function(id) {
+      return $http.get('/api/pages/' + id);
+    },
 
-        search: function(id, q) {
-            return $http.get('/api/pages/' + id +'/search?q=' + q);
-        },
-
-        getPage: function(id) {
-            return $http.get('/api/pages/' + id);
-        },
-
-        getUser: function() {
-            return $http.get('/api/user');
-        },
-
-    };
+    getUser: function() {
+      return $http.get('/api/user');
+    },
+  };
 }
