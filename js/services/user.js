@@ -3,14 +3,24 @@ function UserService(api) {
   	name: '',
   	email: '',
   	last_fetched: '',
+    fetch: function() {
+      var self = this;
+      api.getUser().success(function(data) {
+        self.name = data.name;
+        self.email = data.email;
+        self.avatar_url = data.avatar_url;
+        self.last_fetched = data.last_fetched;
+
+        if (!data.last_fetched) {
+          setTimeout(function() {
+            self.fetch();
+          }, 1000);
+        }
+      });
+    }
   };
 
-  api.getUser().success(function(data) {
-    user.name = data.name;
-    user.email = data.email;
-    user.avatar_url = data.avatar_url;
-    user.last_fetched = data.last_fetched;
-  });
+  user.fetch();
 
   return user;
 }

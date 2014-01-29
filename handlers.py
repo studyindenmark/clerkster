@@ -68,6 +68,8 @@ class ApiHandler(BaseRequestHandler):
       'avatar_url': user.avatar_url,
       'name': user.name,
       'email': user.email,
+      'last_fetched': user.last_fetched.strftime('%Y-%m-%d %H:%M')
+        if user.last_fetched else None,
     }
 
   @classmethod
@@ -214,14 +216,14 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
         if ok:
           self.auth.set_session(self.auth.store.user_to_dict(user))
 
-    queue = taskqueue.Queue('facebook')
-    task = taskqueue.Task(
-      url='/worker/fetch_pages_for_user',
-      params={
-        'key': user.key.urlsafe(),
-      }
+    taskqueue.Queue('facebook').add(
+      taskqueue.Task(
+        url='/worker/fetch_pages_for_user',
+        params={
+          'key': user.key.urlsafe(),
+        }
+      )
     )
-    queue.add(task)
 
     self.redirect('/')
 
