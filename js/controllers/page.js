@@ -4,9 +4,20 @@ function PageController($scope, $location, $routeParams, $q, api, pages) {
   $scope.from = $routeParams.from || null;
   $scope.to = $routeParams.to || null;
   $scope.message = $routeParams.message || null;
+  $scope.progress = 0;
 
   pages.get($scope.pageId, function(page) {
     $scope.page = page;
+    
+    if (!page.last_fetched) {
+      var interval = setInterval(function() {
+        $scope.progress += (100 - $scope.progress) * 0.1;
+        if (page.last_fetched) {
+          clearInterval(interval);
+        }
+      }, 10);
+    }
+
   });
 
   var q =[];

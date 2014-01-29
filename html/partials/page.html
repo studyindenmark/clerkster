@@ -1,4 +1,10 @@
-<div class="navbar navbar-default" role="navigation">
+<div ng-show="page && !page.last_fetched" class="progress">
+  <div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%;">
+    <span class="sr-only">{{progress}}% Complete</span>
+  </div>
+</div> 
+
+<div ng-show="page.last_fetched" class="navbar navbar-default" role="navigation">
   <form class="navbar-form navbar-left row" role="search" ng-submit="update()">
 
     <div class="form-group col-md-3">
@@ -34,20 +40,19 @@
   </form>
 </div>
 
-<div class="visible-print">
+<div ng-show="page.last_fetched" class="visible-print">
   <h1>{{page.name}}</h1>
   <h2>{{from || 'Beginning of time'}} - {{to || 'now'}}</h2>
   <br/>
 </div>
 
-<div class="well" ng-show="posts.length > 0">
+<div ng-show="page.last_fetched && posts.length > 0" class="well">
   <span>{{nPosts}} {{nPosts == 1 ? 'post' : 'posts'}}, {{nComments}} {{nComments == 1 ? 'comment' : 'comments'}}</span>
   <span class="visible-print">Author: {{author || 'anyone'}}</span>
   <span class="visible-print">Containing: {{message ? '"' + message + '"' : 'anything'}}</span>
 </div>
 
-
-<div class="row">
+<div ng-show="page.last_fetched" class="row">
   <div class="col-md-12">
 
     <div class="posts">
