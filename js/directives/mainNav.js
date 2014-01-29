@@ -1,4 +1,4 @@
-function MainNav($location, api, user) {
+function MainNav($location, api, user, pages) {
   return {
     restrict: 'E',
     replace: true,
@@ -6,9 +6,6 @@ function MainNav($location, api, user) {
     },
     templateUrl: '/html/directives/mainNav.html',
     link: function (scope, element) {
-
-      scope.user = user;
-
       function getPageFromUrl() {
         var split = $location.path().split('/');
 
@@ -32,11 +29,13 @@ function MainNav($location, api, user) {
         return id === getPageFromUrl();
       };
 
-      api.getPages().success(function(data) {
-        scope.pages = data;
-        scope.selectedPage = getPageFromUrl();
-        if (!scope.selectedPage && scope.pages.length > 0) {
-          scope.selectedPage = scope.pages[0].id;
+      scope.user = user;
+      scope.pages = pages;
+      scope.selectedPage = getPageFromUrl();
+
+      scope.$on('pages_loaded', function() {
+        if (!scope.selectedPage && scope.pages.list.length > 0) {
+          scope.selectedPage = scope.pages.list[0].id;
         }
       });
     }

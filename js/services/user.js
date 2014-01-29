@@ -1,4 +1,4 @@
-function UserService(api) {
+function UserService(api, pages) {
   var user = {
   	name: '',
   	email: '',
@@ -11,7 +11,9 @@ function UserService(api) {
         self.avatar_url = data.avatar_url;
         self.last_fetched = data.last_fetched;
 
-        if (!data.last_fetched) {
+        if (data.last_fetched) {
+          pages.fetch();
+        } else {
           setTimeout(function() {
             self.fetch();
           }, 1000);

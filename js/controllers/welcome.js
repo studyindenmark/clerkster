@@ -1,7 +1,8 @@
-function WelcomeController($scope, $routeParams, api, user) {
+function WelcomeController($scope, $routeParams, api, user, pages) {
 	var interval;
 
 	$scope.user = user;
+  $scope.pages = pages;
   $scope.progress = 0;
 
   function getPages() {
@@ -10,14 +11,11 @@ function WelcomeController($scope, $routeParams, api, user) {
     });
   }
 
-  if (user.last_fetched) {
-    getPages();
-  } else {
+  if (!user.last_fetched) {
 		interval = setInterval(function() {
 			$scope.progress += (100 - $scope.progress) * 0.1;
       if (user.last_fetched) {
         clearInterval(interval);
-        getPages();
       }
 		}, 10);
 	}

@@ -12,10 +12,10 @@
     </div>
 
     <div class="collapse navbar-collapse" id="main-collapse">
-      <form class="navbar-form navbar-left" ng-show="pages.length > 0 && !isOnWelcomeScreen()">
+      <form class="navbar-form navbar-left" ng-show="pages.list.length > 0 && !isOnWelcomeScreen()">
         <div class="form-group">
           <select class="form-control" ng-model="selectedPage" ng-change="openSelectedPage()">
-            <option ng-repeat="page in pages" value="{{page.id}}" ng-selected="isCurrentPage(page.id)">{{page.name}}</option>
+            <option ng-repeat="page in pages.list" value="{{page.id}}" ng-selected="isCurrentPage(page.id)">{{page.name}}</option>
           </select>
         </div>
       </form>
