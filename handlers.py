@@ -67,6 +67,8 @@ class ApiHandler(BaseRequestHandler):
     return {
       'avatar_url': user.avatar_url,
       'name': user.name,
+      'first_name': user.first_name,
+      'last_name': user.last_name,
       'email': user.email,
       'last_fetched': user.last_fetched.strftime('%Y-%m-%d %H:%M')
         if user.last_fetched else None,
@@ -166,6 +168,8 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
       'id'     : lambda id: ('avatar_url', 
         'http://graph.facebook.com/{0}/picture?type=square'.format(id)),
       'name'   : 'name',
+      'first_name'   : 'first_name',
+      'last_name'   : 'last_name',
       'link'   : 'link',
       'email'   : 'email',
     },
