@@ -1,4 +1,4 @@
-function MainNav($location, api, user, pages) {
+function MainNav($location, user, pages) {
   return {
     restrict: 'E',
     replace: true,
