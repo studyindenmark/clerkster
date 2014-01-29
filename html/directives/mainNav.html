@@ -12,7 +12,7 @@
     </div>
 
     <div class="collapse navbar-collapse" id="main-collapse">
-      <form class="navbar-form navbar-left" ng-show="pages.list.length > 0 && !isOnWelcomeScreen()">
+      <form class="navbar-form navbar-left" ng-show="pages.list.length > 0 && isOnPageScreen() == true">
         <div class="form-group">
           <select class="form-control" ng-model="selectedPage" ng-change="openSelectedPage()">
             <option ng-repeat="page in pages.list" value="{{page.id}}" ng-selected="isCurrentPage(page.id)">{{page.name}}</option>
@@ -24,6 +24,7 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-image:url({{user.avatar_url}})"><b class="caret"></b></a>
           <ul class="dropdown-menu">
+            <li><a href="/settings" target="_self">Settings</a></li>
             <li><a href="/logout" target="_self">Sign out</a></li>
           </ul>
         </li>

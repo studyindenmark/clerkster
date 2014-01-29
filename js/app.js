@@ -6,6 +6,10 @@ angular.module('clerkster', ['ngAnimate', 'ngSanitize', 'ngRoute', 'angular-load
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
         $routeProvider
+            .when('/settings', {
+                templateUrl: '/html/partials/settings.html',
+                controller: SettingsController,
+            })
             .when('/pages', {
                 templateUrl: '/html/partials/welcome.html',
                 controller: WelcomeController,

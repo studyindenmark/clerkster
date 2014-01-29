@@ -16,8 +16,9 @@ function MainNav($location, user, pages) {
         return split[2];
       }
 
-      scope.isOnWelcomeScreen = function() {
-        return $location.path() === '/pages';
+      scope.isOnPageScreen = function() {
+        var split = $location.path().split('/');
+        return split.length > 2 && split[1] === 'pages';
       };
 
       scope.openSelectedPage = function () {
