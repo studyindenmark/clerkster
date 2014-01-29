@@ -53,5 +53,9 @@ function PageController($scope, $location, $routeParams, $q, api, pages) {
     $location.search('to', $scope.to || null);
     $location.search('message', $scope.message || null);
   };
+
+  $scope.print = function() {
+    window.print();
+  };
 }
 

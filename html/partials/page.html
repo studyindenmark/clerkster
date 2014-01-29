@@ -52,6 +52,12 @@
   <span class="visible-print">Containing: {{message ? '"' + message + '"' : 'anything'}}</span>
 </div>
 
+<p class="hidden-print">
+  <button class="btn btn-default" ng-click="print()">
+    <i class="glyphicon glyphicon-print"></i>
+  </button>
+</p>
+
 <div ng-show="page.last_fetched" class="row">
   <div class="col-md-12">
 
