@@ -22,7 +22,7 @@ routes = [
   Route('/cron/send_reports', handler='cron.CronHandler:send_reports'),
   
   Route('/worker/fetch_page', handler='worker.WorkerHandler:fetch_page'),
-  Route('/worker/fetch_pages', handler='worker.WorkerHandler:fetch_pages'),
+  Route('/worker/fetch_pages_for_user', handler='worker.WorkerHandler:fetch_pages_for_user'),
   Route('/worker/send_report', handler='worker.WorkerHandler:send_report'),
 
   Route('/api/user', handler='handlers.ApiHandler:get_user'),

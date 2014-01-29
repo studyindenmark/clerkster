@@ -1,4 +1,4 @@
-function MainNav($location, api) {
+function MainNav($location, api, user) {
   return {
     restrict: 'E',
     replace: true,
@@ -6,6 +6,8 @@ function MainNav($location, api) {
     },
     templateUrl: '/html/directives/mainNav.html',
     link: function (scope, element) {
+
+      scope.user = user;
 
       function getPageFromUrl() {
         var split = $location.path().split('/');
@@ -29,10 +31,6 @@ function MainNav($location, api) {
         var split = $location.path().split('/');
         return id === getPageFromUrl();
       };
-
-      api.getUser().success(function(data) {
-        scope.user = data;
-      });
 
       api.getPages().success(function(data) {
         scope.pages = data;

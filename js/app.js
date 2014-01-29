@@ -1,6 +1,7 @@
 angular.module('clerkster', ['ngAnimate', 'ngSanitize', 'ngRoute', 'angular-loading-bar'])
     .directive('mainNav', MainNav)
     .factory('api', ApiService)
+    .factory('user', UserService)
     .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
         $routeProvider

@@ -9,6 +9,7 @@ from simpleauth import SimpleAuthHandler
 from facebook import FacebookAPI
 from models import Page
 from search import search_posts
+from google.appengine.api import taskqueue
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -212,6 +213,15 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
         ok, user = self.auth.store.user_model.create_user(auth_id, **_attrs)
         if ok:
           self.auth.set_session(self.auth.store.user_to_dict(user))
+
+    queue = taskqueue.Queue('facebook')
+    task = taskqueue.Task(
+      url='/worker/fetch_pages_for_user',
+      params={
+        'key': user.key.urlsafe(),
+      }
+    )
+    queue.add(task)
 
     self.redirect('/')
 

@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 from google.appengine.ext.ndb import Key
 from webapp2 import RequestHandler
 from models import Post
@@ -109,10 +110,11 @@ def fetch_pages(user):
 
 class WorkerHandler(RequestHandler):
 
-  def fetch_pages(self):
-    key = Key(urlsafe=self.request.get('key'))
-    user = key.get()
+  def fetch_pages_for_user(self):
+    user = Key(urlsafe=self.request.get('key')).get()
     fetch_pages(user)
+    user.last_fetched = datetime.now()
+    user.put()
 
   def fetch_page(self):
     key = Key(urlsafe=self.request.get('key'))
