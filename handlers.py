@@ -4,12 +4,12 @@ import secrets
 import json
 import os.path
 import webapp2
+from google.appengine.api import taskqueue
 from webapp2_extras import auth, sessions
 from simpleauth import SimpleAuthHandler
 from facebook import FacebookAPI
 from models import Page
 from search import search_posts
-from google.appengine.api import taskqueue
 
 
 class BaseRequestHandler(webapp2.RequestHandler):
@@ -78,6 +78,8 @@ class ApiHandler(BaseRequestHandler):
       'id': page.key.id(),
       'name': page.name,
       'authors': page.authors,
+      'last_fetched': page.last_fetched.strftime('%Y-%m-%d %H:%M')
+        if page.last_fetched else None,
     }
 
   @classmethod

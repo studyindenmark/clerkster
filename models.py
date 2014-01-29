@@ -15,6 +15,7 @@ class User(webapp2_extras.appengine.auth.models.User):
 class Page(ndb.Model):
   name = ndb.StringProperty()
   access_token = ndb.StringProperty()
+  last_fetched = ndb.DateTimeProperty()
 
   @property
   def authors(self):
@@ -30,16 +31,6 @@ class Page(ndb.Model):
       .query(ancestor=self.key)\
       .order(-Post.created_time)\
       .filter(Post.is_reply == False)
-
-  def _post_put_hook(self, future):
-    queue = taskqueue.Queue('facebook')
-    task = taskqueue.Task(
-      url='/worker/fetch_page',
-      params={
-        'key': self.key.urlsafe(),
-      }
-    )
-    queue.add(task)
 
 
 class Post(ndb.Model):

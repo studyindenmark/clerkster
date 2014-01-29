@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from google.appengine.ext.ndb import Key
+from google.appengine.api import taskqueue
 from webapp2 import RequestHandler
 from models import Post
 from models import Page
@@ -108,6 +109,15 @@ def fetch_pages(user):
     )
     m.put()
 
+    taskqueue.Queue('facebook').add(
+      taskqueue.Task(
+        url='/worker/fetch_page',
+        params={
+          'key': m.key.urlsafe(),
+        }
+      )
+    )
+
 class WorkerHandler(RequestHandler):
 
   def fetch_pages_for_user(self):
@@ -122,6 +132,9 @@ class WorkerHandler(RequestHandler):
 
     fetch_feed(page)
     fetch_threads(page)
+
+    page.last_fetched = datetime.now()
+    page.put()
 
   def send_report(self):
     key = Key(urlsafe=self.request.get('key'))
