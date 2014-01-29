@@ -1,12 +1,12 @@
-function PageController($scope, $location, $routeParams, $q, api) {
+function PageController($scope, $location, $routeParams, $q, api, pages) {
   $scope.pageId = $routeParams.page_id;
   $scope.author = $routeParams.author || '';
   $scope.from = $routeParams.from || null;
   $scope.to = $routeParams.to || null;
   $scope.message = $routeParams.message || null;
 
-  api.getPage($scope.pageId).success(function(data) {
-    $scope.page = data;
+  pages.get($scope.pageId, function(page) {
+    $scope.page = page;
   });
 
   var q =[];
