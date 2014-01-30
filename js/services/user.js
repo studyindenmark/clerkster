@@ -6,9 +6,11 @@ function UserService(api, pages) {
     last_name: '',
   	email: '',
   	last_fetched: '',
+    isLoaded: false,
     fetch: function() {
       var self = this;
       api.getUser().success(function(data) {
+        self.isLoaded = true;
         self.name = data.name;
         self.author = data.author;
         self.first_name = data.first_name;

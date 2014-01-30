@@ -4,13 +4,15 @@ function SettingsController($scope, $routeParams, api, user) {
 
   $scope.save = function() {
 
+    $scope.saved = false;
+
   	if (timeout) {
   		clearTimeout(timeout);
   	}
 
   	timeout = setTimeout(function() {
   		api.saveSettings({author: user.author}).success(function() {
-		  	console.log('saving author', user.author);
+        $scope.saved = true;
   		});
   	}, 1000);
 
