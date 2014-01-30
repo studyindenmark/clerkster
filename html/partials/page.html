@@ -4,10 +4,10 @@
   </div>
 </div> 
 
-<div ng-show="page.last_fetched" class="navbar navbar-default" role="navigation">
+<div ng-show="page.last_fetched" class="row navbar navbar-default" role="navigation">
   <form class="navbar-form navbar-left row" role="search" ng-submit="update()">
 
-    <div class="form-group col-md-3">
+    <div class="form-group col-sm-3">
       <label for="author">Author</label>
       <select ng-change="update()" name="author" class="form-control" ng-model="author">
         <option value="">Everyone</option>
@@ -17,17 +17,17 @@
       </select>
     </div>
 
-    <div class="form-group col-md-3">
+    <div class="form-group col-sm-3">
       <label for="from">From</label>
       <input name="from" type="date" class="form-control" ng-model="from" ng-change="update()">
     </div>
 
-    <div class="form-group col-md-3">
+    <div class="form-group col-sm-3">
       <label for="to">To</label>
       <input name="to" type="date" class="form-control" ng-model="to" ng-change="update()">
     </div>
 
-    <div class="form-group col-md-3">
+    <div class="form-group col-sm-3">
       <label for="message">Message</label>
       <div class="input-group">
         <input type="text" class="form-control" ng-model="message">
@@ -40,46 +40,42 @@
   </form>
 </div>
 
-<div ng-show="page.last_fetched" class="visible-print">
+<div ng-show="page.last_fetched" class="row visible-print">
   <h1>{{page.name}}</h1>
   <h2>{{from || 'Beginning of time'}} - {{to || 'now'}}</h2>
   <br/>
 </div>
 
-<div ng-show="page.last_fetched && posts.length > 0" class="well">
-  <span>{{nPosts}} {{nPosts == 1 ? 'post' : 'posts'}}, {{nComments}} {{nComments == 1 ? 'comment' : 'comments'}}</span>
-  <span class="visible-print">Author: {{author || 'everyone'}}</span>
-  <span class="visible-print">Containing: {{message ? '"' + message + '"' : 'everything'}}</span>
+<div ng-show="page.last_fetched && posts.length > 0" class="row well">
+  <div class="col-xs-6">
+    <span>{{nPosts}} {{nPosts == 1 ? 'post' : 'posts'}}, {{nComments}} {{nComments == 1 ? 'comment' : 'comments'}}</span>
+    <span class="visible-print">Author: {{author || 'everyone'}}</span>
+    <span class="visible-print">Containing: {{message ? '"' + message + '"' : 'everything'}}</span>
+  </div>
+
+  <div class="col-xs-6 text-right">
+    <button class="hidden-print btn btn-default" ng-click="print()">
+      <i class="glyphicon glyphicon-print"></i>
+    </button>
+  </div>
 </div>
 
-<p class="hidden-print">
-  <button class="btn btn-default" ng-click="print()">
-    <i class="glyphicon glyphicon-print"></i>
-  </button>
-</p>
-
 <div ng-show="page.last_fetched" class="row">
-  <div class="col-md-12">
+  <p ng-show="empty" class="alert alert-warning">No posts found.</p>
 
-    <div class="posts">
-      <p ng-show="empty" class="alert alert-warning">No posts found.</p>
-
-      <ul class="list-group">
-        <li ng-repeat="post in posts" class="list-group-item">
-          <p>{{post.created_time}}</p>
-          <p>{{post.from.name}}:</p>
-          <p>{{post.message}}</p>
-          <ul class="replies" ng-show="post.replies.length > 0">
-            <li ng-repeat="reply in post.replies" class="list-group-item">
-              <p>{{reply.created_time}}</p>
-              <p>{{reply.from.name}}:</p>
-              <p>{{reply.message}}</p>
-            </li>
-          </ul>
+  <ul class="list-group">
+    <li ng-repeat="post in posts" class="list-group-item">
+      <p>{{post.created_time}}</p>
+      <p>{{post.from.name}}:</p>
+      <p>{{post.message}}</p>
+      <ul class="replies" ng-show="post.replies.length > 0">
+        <li ng-repeat="reply in post.replies" class="list-group-item">
+          <p>{{reply.created_time}}</p>
+          <p>{{reply.from.name}}:</p>
+          <p>{{reply.message}}</p>
         </li>
       </ul>
-    </div>
-
-  </div>
+    </li>
+  </ul>
 </div>
 
