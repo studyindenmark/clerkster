@@ -18,10 +18,16 @@ class FacebookAPI(object):
   	"""
   	return datetime.strptime(s, '%Y-%m-%dT%H:%M:%S+0000')
 
+  def fetch_raw(self, url):
+    r = urlfetch.fetch(url)
+    if r.status_code != 200:
+      raise Exception("%s returned %s - %s" % (url, r.status_code, r.content))
+    return json.loads(r.content)
+
   def fetch(self, path, params={}):
     params['access_token'] = self.access_token
     url = "https://graph.facebook.com/%s?%s" % (path, urlencode(params))
     r = urlfetch.fetch(url)
     if r.status_code != 200:
-        raise Exception("%s returned %s - %s" % (url, r.status_code, r.content))
+      raise Exception("%s returned %s - %s" % (url, r.status_code, r.content))
     return json.loads(r.content)

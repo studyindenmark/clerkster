@@ -11,10 +11,21 @@ import search
 import mail
 
 
-def fetch_threads(page):
+def fetch_threads(page, next_url=None):
   api = FacebookAPI(page.access_token)
-  data = api.fetch(page.key.id() + '/threads')
+  data = api.fetch_raw(next_url) if next_url else api.fetch(page.key.id() + '/threads')
   docs = []
+
+  if data.get('paging', {}).get('next'):
+    taskqueue.Queue('facebook').add(
+      taskqueue.Task(
+        url='/worker/fetch_page_threads',
+        params={
+          'key': page.key.urlsafe(),
+          'next_url': data.get('paging').get('next'),
+        }
+      )
+    )
 
   for thread in data.get('data'):
     messages = thread.get('messages').get('data')
@@ -57,10 +68,21 @@ def fetch_threads(page):
 
   search.index(page, docs)
 
-def fetch_feed(page):
+def fetch_feed(page, next_url=None):
   api = FacebookAPI(page.access_token)
-  data = api.fetch(page.key.id() + '/feed')
+  data = api.fetch_raw(next_url) if next_url else api.fetch(page.key.id() + '/feed')
   docs = []
+
+  if data.get('paging', {}).get('next'):
+    taskqueue.Queue('facebook').add(
+      taskqueue.Task(
+        url='/worker/fetch_page_feed',
+        params={
+          'key': page.key.urlsafe(),
+          'next_url': data.get('paging').get('next'),
+        }
+      )
+    )
 
   for post in data.get('data'):
     post_model = Post(
@@ -125,6 +147,20 @@ class WorkerHandler(RequestHandler):
     fetch_pages(user)
     user.last_fetched = datetime.now()
     user.put()
+
+  def fetch_page_feed(self):
+    page = Key(urlsafe=self.request.get('key')).get()
+    next_url = self.request.get('next_url')
+    fetch_feed(page, next_url)
+    page.last_fetched = datetime.now()
+    page.put()
+
+  def fetch_page_threads(self):
+    page = Key(urlsafe=self.request.get('key')).get()
+    next_url = self.request.get('next_url')
+    fetch_threads(page, next_url)
+    page.last_fetched = datetime.now()
+    page.put()
 
   def fetch_page(self):
     key = Key(urlsafe=self.request.get('key'))

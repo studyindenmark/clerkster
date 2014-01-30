@@ -21,6 +21,8 @@ routes = [
   Route('/cron/fetch_pages', handler='cron.CronHandler:fetch_pages'),
   Route('/cron/send_reports', handler='cron.CronHandler:send_reports'),
   
+  Route('/worker/fetch_page_feed', handler='worker.WorkerHandler:fetch_page_feed'),
+  Route('/worker/fetch_page_threads', handler='worker.WorkerHandler:fetch_page_threads'),
   Route('/worker/fetch_page', handler='worker.WorkerHandler:fetch_page'),
   Route('/worker/fetch_pages_for_user', handler='worker.WorkerHandler:fetch_pages_for_user'),
   Route('/worker/send_report', handler='worker.WorkerHandler:send_report'),
