@@ -48,8 +48,8 @@
 
 <div ng-show="page.last_fetched && posts.length > 0" class="well">
   <span>{{nPosts}} {{nPosts == 1 ? 'post' : 'posts'}}, {{nComments}} {{nComments == 1 ? 'comment' : 'comments'}}</span>
-  <span class="visible-print">Author: {{author || 'anyone'}}</span>
-  <span class="visible-print">Containing: {{message ? '"' + message + '"' : 'anything'}}</span>
+  <span class="visible-print">Author: {{author || 'everyone'}}</span>
+  <span class="visible-print">Containing: {{message ? '"' + message + '"' : 'everything'}}</span>
 </div>
 
 <p class="hidden-print">
