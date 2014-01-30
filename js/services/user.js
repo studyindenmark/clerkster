@@ -1,6 +1,7 @@
 function UserService(api, pages) {
   var user = {
   	name: '',
+    author: '',
     first_name: '',
     last_name: '',
   	email: '',
@@ -9,6 +10,7 @@ function UserService(api, pages) {
       var self = this;
       api.getUser().success(function(data) {
         self.name = data.name;
+        self.author = data.author;
         self.first_name = data.first_name;
         self.last_name = data.last_name;
         self.email = data.email;

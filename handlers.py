@@ -67,6 +67,7 @@ class ApiHandler(BaseRequestHandler):
     return {
       'avatar_url': user.avatar_url,
       'name': user.name,
+      'author': user.author,
       'first_name': user.first_name,
       'last_name': user.last_name,
       'email': user.email,
@@ -97,6 +98,17 @@ class ApiHandler(BaseRequestHandler):
         if doc.get('replies') else None,
       'author': doc['author'],
     }
+
+  def post_settings(self):
+    input_data = json.loads(self.request.body)
+    author = input_data.get('author')
+
+    self.current_user.author = author
+    self.current_user.put()
+
+    data = ApiHandler._user_to_json(self.current_user)
+    self.response.headers['Content-Type'] = 'application/json'
+    self.response.write(json.dumps(data))
 
   def get_user(self):
     data = ApiHandler._user_to_json(self.current_user)

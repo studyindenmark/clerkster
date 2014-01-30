@@ -15,5 +15,9 @@ function ApiService($http) {
     getUser: function() {
       return $http.get('/api/user');
     },
+
+    saveSettings: function(args) {
+      return $http.post('/api/settings', args);
+    },
   };
 }

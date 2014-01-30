@@ -6,6 +6,7 @@ from webapp2_extras.appengine.auth import models as webappmodels
 class User(webappmodels.User):
 
   last_fetched = ndb.DateTimeProperty()
+  author = ndb.StringProperty()
 
   def delete(self):
     ndb.delete_multi(ndb.Query(ancestor=self.key).iter(keys_only=True))

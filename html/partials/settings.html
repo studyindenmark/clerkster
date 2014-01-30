@@ -1,5 +1,5 @@
 <ul class="alert alert-info" style="padding-left: 25px">
-	<li>You are identified with posts that ends with "/{{user.first_name}}". Example: "Hey, thanks for your positive feedback /{{user.first_name}}."</li>
+	<li>You are identified with posts that ends with / <input type="text" ng-model="user.author" placeholder="{{user.first_name}}" ng-change="save()"> Example: "Hey, thanks for your positive feedback /{{user.author || user.first_name}}."</li>
 	<li>Monthly reports are sent to {{user.email}}.</li>
 </ul>
 

@@ -27,6 +27,7 @@ routes = [
   Route('/worker/fetch_pages_for_user', handler='worker.WorkerHandler:fetch_pages_for_user'),
   Route('/worker/send_report', handler='worker.WorkerHandler:send_report'),
 
+  Route('/api/settings', handler='handlers.ApiHandler:post_settings', methods=['POST']),
   Route('/api/user', handler='handlers.ApiHandler:get_user'),
   Route('/api/pages', handler='handlers.ApiHandler:get_pages'),
   Route('/api/pages/<page_id>', handler='handlers.ApiHandler:get_page', methods=['GET']),
