@@ -43,6 +43,10 @@ def send_report(user):
       link
     )
 
+  body += 'Not interested in receiving these emails anymore? You can delete your account here: %s' % (
+    EMAIL_DOMAIN + '/settings'
+  )
+
   print body
 
   mail.send_mail(
