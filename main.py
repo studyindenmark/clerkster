@@ -33,7 +33,9 @@ routes = [
   Route('/api/facebook/pages/<page_id>/feed', handler='handlers.FacebookHandler:get_feed', methods=['GET']),
   Route('/api/facebook/pages/<page_id>/threads', handler='handlers.FacebookHandler:get_threads', methods=['GET']),
 
+  Route('/delete', handler='handlers.AuthHandler:delete_account', methods=['POST']),
   Route('/logout', handler='handlers.AuthHandler:logout', name='logout'),
+
   Route('/auth/<provider>', handler='handlers.AuthHandler:_simple_auth', name='auth_login'),
   Route('/auth/<provider>/callback', handler='handlers.AuthHandler:_auth_callback', name='auth_callback'),
   Route(r'<path:.*>', handler='handlers.RootHandler'),  

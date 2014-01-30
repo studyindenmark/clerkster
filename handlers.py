@@ -175,6 +175,10 @@ class AuthHandler(BaseRequestHandler, SimpleAuthHandler):
     },
   }
 
+  def delete_account(self):
+    user = self.current_user.delete()
+    self.auth.unset_session()
+    self.redirect('/')
 
   def _on_signin(self, data, auth_info, provider):
     """Callback whenever a new or existing user is logging in.

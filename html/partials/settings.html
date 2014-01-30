@@ -1,2 +1,13 @@
 <p class="alert alert-info">Monthly reports will be sent to {{user.email}}</p>
 <p class="alert alert-info">You will be identified with posts that ends with "/{{user.first_name}}". Example: "Hey, thanks for your positive feedback /{{user.first_name}}"</p>
+<button ng-hide="showRealDeleteButton" class="btn btn-warning" ng-click="showRealDeleteButton=true">Delete my Social Keep account</button>
+
+<div class="alert alert-warning" ng-show="showRealDeleteButton">
+	<p>Are you really sure you want to delete your account? Of course this will not affect your Facebook pages over at Facebook.</p>
+	<br/>
+
+	<form method="post" action="/delete">
+		<button type="submit" class="btn btn-warning">Yes, really delete my account.</button>
+		<span class="btn btn-default" ng-click="showRealDeleteButton=false">Cancel</span>
+	</form>
+</div>

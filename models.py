@@ -1,11 +1,17 @@
 from google.appengine.ext import ndb
 from google.appengine.api import taskqueue
-import webapp2_extras.appengine.auth.models
+from webapp2_extras.appengine.auth import models as webappmodels
 
 
-class User(webapp2_extras.appengine.auth.models.User):
+class User(webappmodels.User):
 
   last_fetched = ndb.DateTimeProperty()
+
+  def delete(self):
+    ndb.delete_multi(ndb.Query(ancestor=self.key).iter(keys_only=True))
+    webappmodels.Unique.delete_multi(
+      map(lambda s: 'User.auth_id:' + s, self.auth_ids)
+    )
 
   @property
   def pages(self):
