@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,15 +14,20 @@
     <link rel="apple-touch-icon" href="/img/touch_icon.png" />
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/js/lib/angular.js"></script>
   </head>
 
-  <body ng-controller="MainController">
+  <body>
     <div class="view-content container">
-      <div class="text-center">
-        <a class="btn btn-primary" href="/auth/facebook">Sign in with Facebook</a>
-        <br/>
-        <br/>
-        <p><strong>user_about_me</strong> so that we can display your name and picture as you log in. <strong>email</strong> so that we can email monthly reports to you. <strong>manage_pages</strong> so that we can read posts from your page's wall. We never modify content on your page, but Facebook does not have a read-only permission, so you just have to trust us on this. <strong>read_page_mailboxes</strong> so that we can read direct messages from your page.</p>
+      <div class="jumbotron">
+        <h1>Social Keep</h1>
+        <p class="lead">
+          Social Keep is a tool that archives the activity &mdash; both wall posts and direct messages &mdash; of your Facebook pages. At the end of the month, you will recieve a summary report.
+        </p>
+        <p>
+          <a class="btn btn-lg btn-primary" href="/auth/facebook">Sign in with Facebook</a>
+        </p>
       </div>
     </div>
   </body>
